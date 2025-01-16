@@ -20,7 +20,7 @@ export default function StartScreen({ navigation }) {
         />
         <Button
           title="Sign Up"
-          onPress={() => {}}
+          onPress={() => navigation.navigate('Signup')}
           color="#870ae0"
         />
       </View>

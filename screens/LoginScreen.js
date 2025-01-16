@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 
-export default function LoginScreen() {
+export default function LoginScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>ChoresBuddy</Text>
@@ -16,18 +16,19 @@ export default function LoginScreen() {
       </TouchableOpacity>
       <Text style={styles.orText}>OR</Text>
       <TouchableOpacity style={styles.googleButton}>
-        <Image
-          source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg' }}
-          style={styles.icon}
-        />
         <Text style={styles.buttonText}>Login with Google</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.facebookButton}>
-        <Image
-          source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png' }}
-          style={styles.icon}
-        />
         <Text style={styles.buttonText}>Login with Facebook</Text>
+      </TouchableOpacity>
+
+      {/* Login as Parent Button */}
+      <Text style={styles.title}>For testing</Text>
+      <TouchableOpacity
+        style={styles.parentLoginButton}
+        onPress={() => navigation.navigate('ParentDashboard')}
+      >
+        <Text style={styles.parentLoginText}>Login as Parent</Text>
       </TouchableOpacity>
     </View>
   );
@@ -101,12 +102,20 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 36,
     borderRadius: 6,
+    marginBottom: 20,
   },
-  buttonText: {
-    marginLeft: 10,
+  parentLoginButton: {
+    width: '100%',
+    height: 40,
+    backgroundColor: '#870ae0',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 6,
+    marginTop: 20,
   },
-  icon: {
-    width: 20,
-    height: 20,
+  parentLoginText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
