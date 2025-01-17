@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-export default function ParentDashboardScreen() {
+export default function ParentDashboardScreen({ navigation }) {
   return (
     <View style={styles.container}>
       {/* Top Bar */}
@@ -31,8 +31,11 @@ export default function ParentDashboardScreen() {
         </TouchableOpacity>
 
         <Text style={styles.sectionTitle}>Task Management</Text>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Assign New Task</Text>
+        <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('AssignTask')}
+        >
+        <Text style={styles.buttonText}>Assign New Task</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Manage Tasks</Text>
