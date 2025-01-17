@@ -37,8 +37,11 @@ export default function ParentDashboardScreen({ navigation }) {
         >
         <Text style={styles.buttonText}>Assign New Task</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Manage Tasks</Text>
+        <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('ManageTasks')}
+        >
+        <Text style={styles.buttonText}>Manage Tasks</Text>
         </TouchableOpacity>
 
         <Text style={styles.sectionTitle}>Store Management</Text>
