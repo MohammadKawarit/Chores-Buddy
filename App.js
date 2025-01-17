@@ -9,6 +9,8 @@ import AssignTaskScreen from './screens/AssignTaskScreen'
 import TaskDetailsScreen from './screens/TaskDetailsScreen'
 import ManageTasksScreen from './screens/ManageTasksScreen'
 import TaskProgressScreen from './screens/TaskProgressScreen'
+import ManageChildScreen from './screens/ManageChildScreen'
+import AddChildScreen from './screens/AddChildScreen'
 
 const Stack = createStackNavigator();
 
@@ -24,6 +26,8 @@ export default function App() {
         <Stack.Screen name="TaskDetails" component={TaskDetailsScreen} />
         <Stack.Screen name="ManageTasks" component={ManageTasksScreen} />
         <Stack.Screen name="TaskProgress" component={TaskProgressScreen} />
+        <Stack.Screen name="ManageChild" component={ManageChildScreen} />
+        <Stack.Screen name="AddChild" component={AddChildScreen} />
 
       </Stack.Navigator>
     </NavigationContainer>

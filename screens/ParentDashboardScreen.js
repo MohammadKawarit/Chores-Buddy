@@ -23,8 +23,11 @@ export default function ParentDashboardScreen({ navigation }) {
       {/* Content Section */}
       <View style={styles.content}>
         <Text style={styles.sectionTitle}>Child Overview</Text>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Manage Child</Text>
+        <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('ManageChild')}
+        >
+        <Text style={styles.buttonText}>Manage Child</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Child Progress</Text>
