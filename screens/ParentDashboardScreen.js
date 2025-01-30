@@ -23,33 +23,40 @@ export default function ParentDashboardScreen({ navigation }) {
       {/* Content Section */}
       <View style={styles.content}>
         <Text style={styles.sectionTitle}>Child Overview</Text>
-        <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('ManageChild')}
+          <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('ManageChild')}
         >
-        <Text style={styles.buttonText}>Manage Child</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}>Manage Child</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('ChildProgress')} 
+        >
           <Text style={styles.buttonText}>Child Progress</Text>
-        </TouchableOpacity>
+          </TouchableOpacity>
 
         <Text style={styles.sectionTitle}>Task Management</Text>
         <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('AssignTask')}
+          style={styles.button}
+          onPress={() => navigation.navigate('AssignTask')}
         >
-        <Text style={styles.buttonText}>Assign New Task</Text>
+          <Text style={styles.buttonText}>Assign New Task</Text>
         </TouchableOpacity>
         <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('ManageTasks')}
+          style={styles.button}
+          onPress={() => navigation.navigate('ManageTasks')}
         >
-        <Text style={styles.buttonText}>Manage Tasks</Text>
+          <Text style={styles.buttonText}>Manage Tasks</Text>
         </TouchableOpacity>
 
         <Text style={styles.sectionTitle}>Store Management</Text>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Manage Child Store</Text>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('ManageStore')}
+        >
+        <Text style={styles.buttonText}>Manage Child Store</Text>
         </TouchableOpacity>
       </View>
 

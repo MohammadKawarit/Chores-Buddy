@@ -4,14 +4,20 @@ import { createStackNavigator } from '@react-navigation/stack';
 import StartScreen from './screens/StartScreen';
 import LoginScreen from './screens/LoginScreen';
 import SignupScreen from './screens/SignupScreen';
-import ParentDashboardScreen from './screens/ParentDashboardScreen'
-import AssignTaskScreen from './screens/AssignTaskScreen'
-import TaskDetailsScreen from './screens/TaskDetailsScreen'
-import ManageTasksScreen from './screens/ManageTasksScreen'
-import TaskProgressScreen from './screens/TaskProgressScreen'
-import ManageChildScreen from './screens/ManageChildScreen'
-import AddChildScreen from './screens/AddChildScreen'
-
+import ParentDashboardScreen from './screens/ParentDashboardScreen';
+import AssignTaskScreen from './screens/AssignTaskScreen';
+import TaskDetailsScreen from './screens/TaskDetailsScreen';
+import ManageTasksScreen from './screens/ManageTasksScreen';
+import TaskProgressScreen from './screens/TaskProgressScreen';
+import ManageChildScreen from './screens/ManageChildScreen';
+import AddChildScreen from './screens/AddChildScreen';
+import ChildProgressScreen from './screens/ChildProgressScreen'; 
+import TrophiesScreen from './screens/TrophiesScreen';
+import TasksDetailsScreen from './screens/TasksDetailsScreen';
+import ManageStoreScreen from './screens/ManageStoreScreen';
+import RewardApprovalScreen from './screens/RewardApprovalScreen';
+import AddAddressScreen from './screens/AddAddressScreen';
+import OrderConfirmationScreen from './screens/OrderConfirmationScreen';
 const Stack = createStackNavigator();
 
 export default function App() {
@@ -28,7 +34,13 @@ export default function App() {
         <Stack.Screen name="TaskProgress" component={TaskProgressScreen} />
         <Stack.Screen name="ManageChild" component={ManageChildScreen} />
         <Stack.Screen name="AddChild" component={AddChildScreen} />
-
+        <Stack.Screen name="ChildProgress" component={ChildProgressScreen} /> 
+        <Stack.Screen name="Trophies" component={TrophiesScreen} />
+        <Stack.Screen name="TasksDetails" component={TasksDetailsScreen} />
+        <Stack.Screen name="ManageStore" component={ManageStoreScreen} />
+        <Stack.Screen name="RewardApproval" component={RewardApprovalScreen} />
+        <Stack.Screen name="AddAddress" component={AddAddressScreen} />
+        <Stack.Screen name="OrderConfirmation" component={OrderConfirmationScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -1,7 +1,15 @@
 import React from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 export default function SignupScreen() {
+  const navigation = useNavigation();
+
+  const handleSignup = () => {
+    // Navigate to Parent Dashboard
+    navigation.navigate('ParentDashboard');
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.card}>
@@ -16,7 +24,7 @@ export default function SignupScreen() {
         <TextInput style={styles.input} placeholder="Name" />
         <TextInput style={styles.input} placeholder="Email" />
         <TextInput style={styles.input} placeholder="Password" secureTextEntry />
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={handleSignup}>
           <Text style={styles.buttonText}>Signup</Text>
         </TouchableOpacity>
       </View>
