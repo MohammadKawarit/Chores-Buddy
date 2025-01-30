@@ -66,9 +66,13 @@ export default function ParentDashboardScreen({ navigation }) {
           <Icon name="home-outline" size={24} color="#870ae0" />
           <Text style={styles.navText}>Home</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
+        <TouchableOpacity
+          style={styles.navItem}
+          onPress={() => navigation.navigate('Store')}
+        >
           <Icon name="storefront-outline" size={24} color="#000" />
           <Text style={styles.navText}>Store</Text>
+          
         </TouchableOpacity>
         <TouchableOpacity style={styles.navItem}>
           <Icon name="list-outline" size={24} color="#000" />
@@ -136,7 +140,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderTopWidth: 1,
     borderTopColor: '#ccc',
-    paddingVertical: 10,
+    paddingVertical: 15,
   },
   navItem: {
     alignItems: 'center',

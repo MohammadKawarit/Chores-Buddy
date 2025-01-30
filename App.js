@@ -18,6 +18,7 @@ import ManageStoreScreen from './screens/ManageStoreScreen';
 import RewardApprovalScreen from './screens/RewardApprovalScreen';
 import AddAddressScreen from './screens/AddAddressScreen';
 import OrderConfirmationScreen from './screens/OrderConfirmationScreen';
+import StoreScreen from './screens/StoreScreen';
 const Stack = createStackNavigator();
 
 export default function App() {
@@ -41,6 +42,7 @@ export default function App() {
         <Stack.Screen name="RewardApproval" component={RewardApprovalScreen} />
         <Stack.Screen name="AddAddress" component={AddAddressScreen} />
         <Stack.Screen name="OrderConfirmation" component={OrderConfirmationScreen} />
+        <Stack.Screen name="Store" component={StoreScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
