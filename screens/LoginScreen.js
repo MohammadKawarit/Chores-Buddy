@@ -8,27 +8,39 @@ export default function LoginScreen({ navigation }) {
       <Text style={styles.subtitle}>Log in to manage your chores and rewards</Text>
       <TextInput style={styles.input} placeholder="Username" />
       <TextInput style={styles.input} placeholder="Password" secureTextEntry />
+      
       <TouchableOpacity>
         <Text style={styles.forgotPassword}>Forgot my password?</Text>
       </TouchableOpacity>
+
       <TouchableOpacity style={styles.loginButton}>
         <Text style={styles.loginButtonText}>Login</Text>
       </TouchableOpacity>
+
       <Text style={styles.orText}>OR</Text>
+
       <TouchableOpacity style={styles.googleButton}>
         <Text style={styles.buttonText}>Login with Google</Text>
       </TouchableOpacity>
+
       <TouchableOpacity style={styles.facebookButton}>
         <Text style={styles.buttonText}>Login with Facebook</Text>
       </TouchableOpacity>
 
-      {/* Login as Parent Button */}
       <Text style={styles.title}>For testing</Text>
+
       <TouchableOpacity
         style={styles.parentLoginButton}
         onPress={() => navigation.navigate('ParentDashboard')}
       >
         <Text style={styles.parentLoginText}>Login as Parent</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.childLoginButton}
+        onPress={() => navigation.navigate('ChildDashboard')}
+      >
+        <Text style={styles.childLoginText}>Login as Child</Text>
       </TouchableOpacity>
     </View>
   );
@@ -104,6 +116,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     marginBottom: 20,
   },
+
   parentLoginButton: {
     width: '100%',
     height: 40,
@@ -114,6 +127,21 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   parentLoginText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+
+  childLoginButton: {
+    width: '100%',
+    height: 40,
+    backgroundColor: '#4A90E2', 
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 6,
+    marginTop: 10,
+  },
+  childLoginText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',

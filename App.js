@@ -21,36 +21,47 @@ import OrderConfirmationScreen from './screens/OrderConfirmationScreen';
 import StoreScreen from './screens/StoreScreen';
 import CheckoutScreen from './screens/CheckoutScreen';
 import ModifyChildScreen from './screens/ModifyChildScreen';
+import ProfileScreen from './screens/ProfileScreen';
+import SettingsScreen from './screens/SettingsScreen';
+import ChildDashboardScreen from './screens/ChildDashboardScreen';
 import { BalanceProvider } from './context/BalanceContext';
+import { MenuProvider } from 'react-native-popup-menu';
+
 const Stack = createStackNavigator();
 
 export default function App() {
   return (
-  <BalanceProvider>
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Start" component={StartScreen} />
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Signup" component={SignupScreen} />
-        <Stack.Screen name="ParentDashboard" component={ParentDashboardScreen} />
-        <Stack.Screen name="AssignTask" component={AssignTaskScreen} />
-        <Stack.Screen name="TaskDetails" component={TaskDetailsScreen} />
-        <Stack.Screen name="ManageTasks" component={ManageTasksScreen} />
-        <Stack.Screen name="TaskProgress" component={TaskProgressScreen} />
-        <Stack.Screen name="ManageChild" component={ManageChildScreen} />
-        <Stack.Screen name="AddChild" component={AddChildScreen} />
-        <Stack.Screen name="ChildProgress" component={ChildProgressScreen} /> 
-        <Stack.Screen name="Trophies" component={TrophiesScreen} />
-        <Stack.Screen name="TasksDetails" component={TasksDetailsScreen} />
-        <Stack.Screen name="ManageStore" component={ManageStoreScreen} />
-        <Stack.Screen name="RewardApproval" component={RewardApprovalScreen} />
-        <Stack.Screen name="AddAddress" component={AddAddressScreen} />
-        <Stack.Screen name="OrderConfirmation" component={OrderConfirmationScreen} />
-        <Stack.Screen name="Store" component={StoreScreen} />
-        <Stack.Screen name="Checkout" component={CheckoutScreen} />
-        <Stack.Screen name="ModifyChild" component={ModifyChildScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  </BalanceProvider>
+    <MenuProvider>
+      <BalanceProvider>
+        <NavigationContainer>
+          <Stack.Navigator>
+            <Stack.Screen name="Start" component={StartScreen} />
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="Signup" component={SignupScreen} />
+            <Stack.Screen name="ParentDashboard" component={ParentDashboardScreen} />
+            <Stack.Screen name="ChildDashboard" component={ChildDashboardScreen} />
+            <Stack.Screen name="AssignTask" component={AssignTaskScreen} />
+            <Stack.Screen name="TaskDetails" component={TaskDetailsScreen} />
+            <Stack.Screen name="ManageTasks" component={ManageTasksScreen} />
+            <Stack.Screen name="TaskProgress" component={TaskProgressScreen} />
+            <Stack.Screen name="ManageChild" component={ManageChildScreen} />
+            <Stack.Screen name="AddChild" component={AddChildScreen} />
+            <Stack.Screen name="ChildProgress" component={ChildProgressScreen} /> 
+            <Stack.Screen name="Trophies" component={TrophiesScreen} />
+            <Stack.Screen name="TasksDetails" component={TasksDetailsScreen} />
+            <Stack.Screen name="ManageStore" component={ManageStoreScreen} />
+            <Stack.Screen name="RewardApproval" component={RewardApprovalScreen} />
+            <Stack.Screen name="AddAddress" component={AddAddressScreen} />
+            <Stack.Screen name="OrderConfirmation" component={OrderConfirmationScreen} />
+            <Stack.Screen name="Store" component={StoreScreen} />
+            <Stack.Screen name="Checkout" component={CheckoutScreen} />
+            <Stack.Screen name="ModifyChild" component={ModifyChildScreen} />
+            <Stack.Screen name="Profile" component={ProfileScreen} />
+            <Stack.Screen name="Settings" component={SettingsScreen} />
+
+          </Stack.Navigator>
+        </NavigationContainer>
+      </BalanceProvider>
+    </MenuProvider>
   );
 }
