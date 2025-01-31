@@ -3,11 +3,11 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-nativ
 import Icon from 'react-native-vector-icons/Ionicons';
 
 export default function TaskDetailsScreen({ route, navigation }) {
-  const { child } = route.params; // Get the child's name passed as a parameter
+  const { child } = route.params;
 
   return (
     <View style={styles.container}>
-      {/* Header */}
+      
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="arrow-back" size={24} color="#000" />
@@ -15,7 +15,7 @@ export default function TaskDetailsScreen({ route, navigation }) {
         <Text style={styles.title}>Assign Task</Text>
       </View>
 
-      {/* Content */}
+      
       <View style={styles.content}>
         <Text style={styles.label}>Task Description</Text>
         <TextInput
@@ -27,8 +27,8 @@ export default function TaskDetailsScreen({ route, navigation }) {
         <Text style={styles.label}>Assign To</Text>
         <TextInput
           style={styles.input}
-          value={child} // Pre-filled with the selected child
-          editable={false} // Disable editing
+          value={child} 
+          editable={false} 
         />
 
         <Text style={styles.label}>Task Points</Text>
@@ -43,17 +43,17 @@ export default function TaskDetailsScreen({ route, navigation }) {
         </TouchableOpacity>
       </View>
 
-      {/* Footer Navigation */}
+      
       <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Home')}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ParentDashboard')}>
           <Icon name="home-outline" size={24} color="#870ae0" />
           <Text style={styles.navText}>Home</Text>
-        </TouchableOpacity>
+          </TouchableOpacity>
         <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Store')}>
           <Icon name="storefront-outline" size={24} color="#000" />
           <Text style={styles.navText}>Store</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Tasks')}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ManageTasks')}>
           <Icon name="list-outline" size={24} color="#000" />
           <Text style={styles.navText}>Tasks</Text>
         </TouchableOpacity>

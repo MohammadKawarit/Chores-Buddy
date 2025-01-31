@@ -75,7 +75,7 @@ export default function ManageTasksScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
+      
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="menu" size={24} color="#000" />
@@ -83,13 +83,30 @@ export default function ManageTasksScreen({ navigation }) {
         <Text style={styles.title}>Manage Tasks</Text>
       </View>
 
-      {/* Task List */}
+      
       <FlatList
         data={tasks}
         renderItem={renderTask}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.taskList}
       />
+
+      <View style={styles.bottomNav}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ParentDashboard')}>
+          <Icon name="home-outline" size={24} color="#870ae0" />
+          <Text style={styles.navText}>Home</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Store')}>
+          <Icon name="storefront-outline" size={24} color="#000" />
+          <Text style={styles.navText}>Store</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.navItem}>
+          <Icon name="list-outline" size={24} color="#000" />
+          <Text style={styles.navTextActive}>Tasks</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -98,6 +115,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#ffffff',
+    paddingBottom: 60,
   },
   header: {
     flexDirection: 'row',
@@ -149,4 +167,21 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     color: '#000',
   },
+
+  bottomNav: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: '#ffffff',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    borderTopWidth: 1,
+    borderTopColor: '#ccc',
+    paddingVertical: 10,
+    height: 60,
+  },
+  navItem: { alignItems: 'center' },
+  navText: { fontSize: 14, color: '#030303' },
+  navTextActive: { fontSize: 14, color: "#000", fontWeight: 'bold' },
 });

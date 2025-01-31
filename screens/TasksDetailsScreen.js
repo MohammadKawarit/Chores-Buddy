@@ -36,15 +36,15 @@ export default function TasksDetailsScreen({ route, navigation }) {
       <View style={styles.taskCard}><Text style={styles.taskText}>Late Tasks: {taskStats.late}</Text></View>
 
       <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Home')}>
-          <Icon name="home-outline" size={24} color="#870ae0" />
-          <Text style={styles.navText}>Home</Text>
-        </TouchableOpacity>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ParentDashboard')}>
+         <Icon name="home-outline" size={24} color="#870ae0" />
+         <Text style={styles.navText}>Home</Text>
+         </TouchableOpacity>
         <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Store')}>
           <Icon name="storefront-outline" size={24} color="#000" />
           <Text style={styles.navText}>Store</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Task')}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ManageTasks')}>
           <Icon name="list-outline" size={24} color="#000" />
           <Text style={styles.navText}>Task</Text>
         </TouchableOpacity>

@@ -22,7 +22,7 @@ export default function ParentDashboardScreen({ navigation }) {
           />
         </View>
       </View>
-      
+
       <View style={styles.balanceContainer}>
         <Text style={styles.balanceLabel}>Current Balance:</Text>
         <Text style={styles.balanceText}>{balance} Points</Text>
@@ -70,7 +70,7 @@ export default function ParentDashboardScreen({ navigation }) {
 
       
       <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navItem}>
+         <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ParentDashboard')}>
           <Icon name="home-outline" size={24} color="#870ae0" />
           <Text style={styles.navText}>Home</Text>
         </TouchableOpacity>
@@ -80,11 +80,10 @@ export default function ParentDashboardScreen({ navigation }) {
         >
           <Icon name="storefront-outline" size={24} color="#000" />
           <Text style={styles.navText}>Store</Text>
-          
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ManageTasks')}>
           <Icon name="list-outline" size={24} color="#000" />
-          <Text style={styles.navText}>Task</Text>
+          <Text style={styles.navText}>Tasks</Text>
         </TouchableOpacity>
       </View>
     </View>

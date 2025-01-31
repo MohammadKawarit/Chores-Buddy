@@ -7,7 +7,7 @@ export default function TaskProgressScreen({ route, navigation }) {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
+      
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="arrow-back" size={24} color="#000" />
@@ -15,7 +15,7 @@ export default function TaskProgressScreen({ route, navigation }) {
         <Text style={styles.title}>Task Progress</Text>
       </View>
 
-      {/* Content */}
+      
       <View style={styles.content}>
         <View style={styles.card}>
           <View style={styles.taskDetailsHeader}>
@@ -31,7 +31,7 @@ export default function TaskProgressScreen({ route, navigation }) {
           <Image style={styles.image} source={{ uri: task.image }} />
         </View>
 
-        {/* Actions */}
+        
         <TouchableOpacity style={styles.verifyButton}>
           <Text style={styles.verifyButtonText}>Verify to release points</Text>
         </TouchableOpacity>
@@ -40,17 +40,17 @@ export default function TaskProgressScreen({ route, navigation }) {
         </TouchableOpacity>
       </View>
 
-      {/* Footer Navigation */}
+      
       <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Home')}>
-          <Icon name="home-outline" size={24} color="#870ae0" />
-          <Text style={styles.navText}>Home</Text>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ParentDashboard')}>
+         <Icon name="home-outline" size={24} color="#870ae0" />
+         <Text style={styles.navText}>Home</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Store')}>
           <Icon name="storefront-outline" size={24} color="#000" />
           <Text style={styles.navText}>Store</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Tasks')}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ManageTasks')}>
           <Icon name="list-outline" size={24} color="#000" />
           <Text style={styles.navText}>Tasks</Text>
         </TouchableOpacity>
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#ffffff',
-    justifyContent: 'space-between', // Ensures footer stays at the bottom
+    justifyContent: 'space-between',
   },
   header: {
     flexDirection: 'row',

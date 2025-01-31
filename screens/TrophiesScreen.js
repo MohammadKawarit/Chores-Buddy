@@ -17,11 +17,11 @@ const mockTrophies = [
 ];
 
 export default function TrophiesScreen({ route, navigation }) {
-  const { child } = route.params; // Receive child data from navigation
+  const { child } = route.params; 
 
   return (
     <View style={styles.container}>
-      {/* Header */}
+    
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="arrow-back-outline" size={24} color="#000" />
@@ -29,13 +29,13 @@ export default function TrophiesScreen({ route, navigation }) {
         <Text style={styles.title}>Child Progress</Text>
       </View>
 
-      {/* Child Info */}
+    
       <View style={styles.childInfo}>
         <Text style={styles.sectionTitle}>Trophies Earned By {child.name}</Text>
         <Image source={{ uri: child.image }} style={styles.childImage} />
       </View>
 
-      {/* Trophies List */}
+      
       <FlatList
         data={mockTrophies}
         keyExtractor={(item) => item.id}
@@ -53,21 +53,21 @@ export default function TrophiesScreen({ route, navigation }) {
         )}
       />
 
-      {/* Bottom Navigation */}
-      <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navItem}>
-          <Icon name="home-outline" size={24} color="#870ae0" />
-          <Text style={styles.navText}>Home</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-          <Icon name="storefront-outline" size={24} color="#000" />
-          <Text style={styles.navText}>Store</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-          <Icon name="list-outline" size={24} color="#000" />
-          <Text style={styles.navText}>Task</Text>
-        </TouchableOpacity>
-      </View>
+      
+     <View style={styles.bottomNav}>
+             <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ParentDashboard')}>
+              <Icon name="home-outline" size={24} color="#870ae0" />
+              <Text style={styles.navText}>Home</Text>
+              </TouchableOpacity>
+             <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Store')}>
+               <Icon name="storefront-outline" size={24} color="#000" />
+               <Text style={styles.navText}>Store</Text>
+             </TouchableOpacity>
+             <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ManageTasks')}>
+               <Icon name="list-outline" size={24} color="#000" />
+               <Text style={styles.navText}>Task</Text>
+             </TouchableOpacity>
+           </View>
     </View>
   );
 }
