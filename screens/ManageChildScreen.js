@@ -27,19 +27,23 @@ export default function ManageChildScreen({ navigation }) {
         <Text style={styles.childPoints}>Points: {item.points}</Text>
       </View>
       <View style={styles.actions}>
-        <TouchableOpacity style={styles.editButton}>
+        <TouchableOpacity
+          style={styles.editButton}
+          onPress={() => navigation.navigate('ModifyChild', { child: item })}
+        >
           <Icon name="create-outline" size={20} color="#000" />
         </TouchableOpacity>
+  
         <TouchableOpacity style={styles.deleteButton}>
           <Icon name="trash-outline" size={20} color="#000" />
         </TouchableOpacity>
       </View>
     </View>
   );
+  
 
   return (
     <View style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="menu" size={24} color="#000" />
@@ -47,7 +51,6 @@ export default function ManageChildScreen({ navigation }) {
         <Text style={styles.title}>Manage Child</Text>
       </View>
 
-      {/* Children List */}
       <FlatList
         data={children}
         renderItem={renderChild}
@@ -55,7 +58,6 @@ export default function ManageChildScreen({ navigation }) {
         contentContainerStyle={styles.childList}
       />
 
-      {/* Add Child Button */}
       <TouchableOpacity
         style={styles.addButton}
         onPress={() => navigation.navigate('AddChild')}
@@ -63,7 +65,6 @@ export default function ManageChildScreen({ navigation }) {
         <Text style={styles.addButtonText}>Add Child</Text>
         </TouchableOpacity>
 
-      {/* Footer Navigation */}
       <View style={styles.bottomNav}>
         <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ParentDashboard')}>
             <Icon name="home-outline" size={24} color="#870ae0" />

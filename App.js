@@ -20,6 +20,7 @@ import AddAddressScreen from './screens/AddAddressScreen';
 import OrderConfirmationScreen from './screens/OrderConfirmationScreen';
 import StoreScreen from './screens/StoreScreen';
 import CheckoutScreen from './screens/CheckoutScreen';
+import ModifyChildScreen from './screens/ModifyChildScreen';
 import { BalanceProvider } from './context/BalanceContext';
 const Stack = createStackNavigator();
 
@@ -47,6 +48,7 @@ export default function App() {
         <Stack.Screen name="OrderConfirmation" component={OrderConfirmationScreen} />
         <Stack.Screen name="Store" component={StoreScreen} />
         <Stack.Screen name="Checkout" component={CheckoutScreen} />
+        <Stack.Screen name="ModifyChild" component={ModifyChildScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   </BalanceProvider>
