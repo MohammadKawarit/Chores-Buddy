@@ -1,10 +1,17 @@
 import React from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {useBalance} from '../context/BalanceContext';
 
 export default function CheckoutScreen({ route, navigation }) {
   
   const { points, price } = route.params || { points: 0, price: '£0' };
+  const { balance, setBalance } = useBalance();
+  const handlePayment = () => {
+    const newBalance = balance + points; 
+    setBalance(newBalance); 
+    navigation.navigate('OrderConfirmation', { newBalance, points });
+  };
 
   return (
     <View style={styles.container}>
@@ -32,7 +39,7 @@ export default function CheckoutScreen({ route, navigation }) {
       </View>
 
      
-      <TouchableOpacity style={styles.payButton}>
+      <TouchableOpacity style={styles.payButton} onPress={handlePayment}>
         <Text style={styles.payButtonText}>Pay {price}</Text>
       </TouchableOpacity>
 

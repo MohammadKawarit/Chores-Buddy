@@ -1,10 +1,11 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useBalance } from '../context/BalanceContext'; // Import balance
 
-export default function OrderConfirmationScreen({ navigation }) {
-    // Mocked delivery date
-  const deliveryDate = 'October 25, 2024'; 
+export default function OrderConfirmationScreen({ navigation, route }) {
+  const { balance } = useBalance(); // Get updated balance
+  const { points } = route.params || { points: 0 }; // Get purchased points
 
   return (
     <View style={styles.container}>
@@ -13,45 +14,27 @@ export default function OrderConfirmationScreen({ navigation }) {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="arrow-back-outline" size={24} color="#000" />
         </TouchableOpacity>
-        <Text style={styles.title}>Order Confirmation</Text>
+        <Text style={styles.title}>Checkout</Text>
       </View>
 
-      {/* Confirmation Message */}
-      <Text style={styles.message}>Thank you for your order!</Text>
-      <Text style={styles.subMessage}>Your order will be delivered on:</Text>
+      {/* Confirmation Box */}
+      <View style={styles.confirmationBox}>
+        <Text style={styles.confirmationText}>Order Confirmation</Text>
+        <Text>{points} points have been added to your account.</Text>
+        <Text style={styles.balanceText}>Current Balance: {balance} points</Text>
 
-      {/* Delivery Date Card */}
-      <View style={styles.deliveryCard}>
-        <Text style={styles.deliveryText}>Delivery Date:</Text>
-        <Text style={styles.deliveryDate}>{deliveryDate}</Text>
-      </View>
-
-      {/* Return to Parent Dashboard Button */}
-      <TouchableOpacity
-        style={styles.returnButton}
-        onPress={() => navigation.navigate('ParentDashboard')}
-      >
-        <Text style={styles.returnButtonText}>Return to HomePage</Text>
-      </TouchableOpacity>
-
-      {/* Bottom Navigation */}
-      <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ParentDashboard')}>
-          <Icon name="home-outline" size={24} color="#870ae0" />
-          <Text style={styles.navText}>Home</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ManageStore')}>
-          <Icon name="storefront-outline" size={24} color="#000" />
-          <Text style={styles.navText}>Store</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Task')}>
-          <Icon name="list-outline" size={24} color="#000" />
-          <Text style={styles.navText}>Tasks</Text>
+        {/* Return to Homepage Button */}
+        <TouchableOpacity
+          style={styles.returnButton}
+          onPress={() => navigation.navigate('ParentDashboard')}
+        >
+          <Text style={styles.returnButtonText}>Return to Homepage</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#ffffff', padding: 20, paddingBottom: 60 },

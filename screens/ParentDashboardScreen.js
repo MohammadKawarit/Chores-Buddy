@@ -1,11 +1,14 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useBalance } from '../context/BalanceContext';
 
 export default function ParentDashboardScreen({ navigation }) {
+  const { balance } = useBalance();
+
   return (
     <View style={styles.container}>
-      {/* Top Bar */}
+      
       <View style={styles.topBar}>
         <Icon name="menu" size={24} color="#000" />
         <Text style={styles.title}>Parent Dashboard</Text>
@@ -19,8 +22,13 @@ export default function ParentDashboardScreen({ navigation }) {
           />
         </View>
       </View>
+      
+      <View style={styles.balanceContainer}>
+        <Text style={styles.balanceLabel}>Current Balance:</Text>
+        <Text style={styles.balanceText}>{balance} Points</Text>
+      </View>
 
-      {/* Content Section */}
+      
       <View style={styles.content}>
         <Text style={styles.sectionTitle}>Child Overview</Text>
           <TouchableOpacity
@@ -60,7 +68,7 @@ export default function ParentDashboardScreen({ navigation }) {
         </TouchableOpacity>
       </View>
 
-      {/* Bottom Navigation */}
+      
       <View style={styles.bottomNav}>
         <TouchableOpacity style={styles.navItem}>
           <Icon name="home-outline" size={24} color="#870ae0" />
