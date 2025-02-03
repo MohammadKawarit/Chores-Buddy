@@ -2,51 +2,52 @@ import React from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useBalance } from '../context/BalanceContext';
-import { Menu, MenuOptions, MenuOption } from 'react-native-popup-menu';
+import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 
 export default function ParentDashboardScreen({ navigation }) {
   const { balance } = useBalance();
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Menu>
-            <TouchableOpacity>
-              <Icon name="menu" size={26} color="#000" />
-            </TouchableOpacity>
-          <MenuOptions>
-            <MenuOption onSelect={() => navigation.navigate('ParentDashboard')}>
-              <Text style={styles.menuText}>Dashboard</Text>
-            </MenuOption>
-            <MenuOption onSelect={() => navigation.navigate('Profile')}>
-              <Text style={styles.menuText}>Profile</Text>
-            </MenuOption>
-            <MenuOption onSelect={() => navigation.navigate('Settings')}>
-              <Text style={styles.menuText}>Settings</Text>
-            </MenuOption>
-            <MenuOption onSelect={() => navigation.navigate('Login')}>
-              <Text style={styles.menuTextLogout}>Logout</Text>
-            </MenuOption>
-          </MenuOptions>
-        </Menu>
+  <MenuTrigger customStyles={{ triggerTouchable: { underlayColor: 'transparent', activeOpacity: 0.7 } }}>
+    <View style={{ padding: 15 }}>  
+      <Icon name="menu" size={30} color="#000" />
+    </View>
+  </MenuTrigger>
+  <MenuOptions customStyles={{ optionsContainer: styles.menuOptions }}>
+    <MenuOption onSelect={() => navigation.navigate('ParentDashboard')}>
+      <Text style={styles.menuText}>Dashboard</Text>
+    </MenuOption>
+    <MenuOption onSelect={() => navigation.navigate('Profile')}>
+      <Text style={styles.menuText}>Profile</Text>
+    </MenuOption>
+    <MenuOption onSelect={() => navigation.navigate('Settings')}>
+      <Text style={styles.menuText}>Settings</Text>
+    </MenuOption>
+    <MenuOption onSelect={() => navigation.navigate('Login')}>
+      <Text style={styles.menuTextLogout}>Logout</Text>
+    </MenuOption>
+  </MenuOptions>
+</Menu>
+
 
         <Text style={styles.title}>Parent Dashboard</Text>
-
         <View style={styles.topRight}>
           <Icon name="notifications-outline" size={24} color="#000" style={styles.iconSpacing} />
           <Image
             style={styles.profileImage}
             source={{
-              uri: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wyMDUzMDJ8MHwxfHNlYXJjaHw1fHxQZW9wbGV8ZW58MXx8fHwxNjg0MjQ4ODE3fDA&ixlib=rb-4.0.3&q=80&w=1080',
+              uri: 'https://randomuser.me/api/portraits/men/1.jpg',
             }}
           />
         </View>
       </View>
-
       <View style={styles.balanceContainer}>
         <Text style={styles.balanceLabel}>Current Balance:</Text>
         <Text style={styles.balanceText}>{balance} Points</Text>
       </View>
-
       <View style={styles.content}>
         <Text style={styles.sectionTitle}>Child Overview</Text>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ManageChild')}>
@@ -69,7 +70,6 @@ export default function ParentDashboardScreen({ navigation }) {
           <Text style={styles.buttonText}>Manage Child Store</Text>
         </TouchableOpacity>
       </View>
-
       <View style={styles.bottomNav}>
         <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ParentDashboard')}>
           <Icon name="home-outline" size={24} color="#870ae0" />
