@@ -9,15 +9,13 @@ export default function ManageStoreScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-     
       <View style={styles.topBar}>
-        <TouchableOpacity onPress={() => navigation.openDrawer()}>
-          <Icon name="menu" size={24} color="#000" />
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Icon name="arrow-back-outline" size={24} color="#000" />
         </TouchableOpacity>
         <Text style={styles.title}>Manage Store & Verify Gifts</Text>
       </View>
 
-      
       <View style={styles.filterCard}>
         <Text style={styles.sectionTitle}>Filter Keywords</Text>
         <Text style={styles.description}>
@@ -35,7 +33,6 @@ export default function ManageStoreScreen({ navigation }) {
         </TouchableOpacity>
       </View>
 
-      
       <View style={styles.filterCard}>
         <Text style={styles.sectionTitle}>Filter by Price</Text>
         <Text style={styles.description}>
@@ -63,17 +60,15 @@ export default function ManageStoreScreen({ navigation }) {
         </TouchableOpacity>
       </View>
 
-      
       <View style={styles.rewardSection}>
-      <TouchableOpacity
-         style={styles.rewardButton}
-        onPress={() => navigation.navigate('RewardApproval')}
+        <TouchableOpacity
+          style={styles.rewardButton}
+          onPress={() => navigation.navigate('RewardApproval')}
         >
-        <Text style={styles.rewardButtonText}>Reward Approval</Text>
+          <Text style={styles.rewardButtonText}>Reward Approval</Text>
         </TouchableOpacity>
       </View>
 
-      
       <View style={styles.bottomNav}>
         <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ParentDashboard')}>
           <Icon name="home-outline" size={24} color="#870ae0" />
@@ -94,16 +89,33 @@ export default function ManageStoreScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#ffffff', padding: 20, paddingBottom: 80 },
-  topBar: { flexDirection: 'row', alignItems: 'center', marginBottom: 20 },
-  title: { fontSize: 20, fontWeight: 'bold', marginLeft: 10, color: '#030303' },
+
+  topBar: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    paddingBottom: 10, 
+    borderBottomWidth: 1, 
+    borderBottomColor: '#ccc',
+  },
+  title: { 
+    fontSize: 20, 
+    fontWeight: 'bold', 
+    color: '#030303',
+    marginLeft: 10, 
+  },
+  backButton: {
+    padding: 10,
+    marginTop: -3, 
+  },
+
   filterCard: { backgroundColor: '#f7f7f7', padding: 15, borderRadius: 6, marginBottom: 20 },
   sectionTitle: { fontSize: 18, fontWeight: 'bold', color: '#030303', marginBottom: 5 },
   description: { fontSize: 14, color: '#666', marginBottom: 10 },
   input: { backgroundColor: '#e3e3e3', padding: 10, borderRadius: 6 },
+
   priceFilter: { flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 },
   priceInput: { backgroundColor: '#e3e3e3', padding: 10, borderRadius: 6, width: '48%' },
 
-  
   confirmButton: {
     backgroundColor: '#870ae0',
     padding: 12,
@@ -113,7 +125,6 @@ const styles = StyleSheet.create({
   },
   confirmButtonText: { color: 'white', fontSize: 16, fontWeight: 'bold' },
 
- 
   rewardSection: {
     marginTop: 40, 
     alignItems: 'center', 
@@ -127,7 +138,6 @@ const styles = StyleSheet.create({
   },
   rewardButtonText: { color: 'white', fontSize: 16, fontWeight: 'bold' },
 
-  /* Bottom Navigation */
   bottomNav: {
     position: 'absolute', bottom: 0, left: 0, right: 0,
     backgroundColor: '#ffffff', flexDirection: 'row', justifyContent: 'space-around',

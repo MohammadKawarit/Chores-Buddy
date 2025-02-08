@@ -46,7 +46,7 @@ export default function ManageChildScreen({ navigation }) {
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon name="menu" size={24} color="#000" />
+          <Icon name="arrow-back-outline" size={24} color="#000" />
         </TouchableOpacity>
         <Text style={styles.title}>Manage Child</Text>
       </View>

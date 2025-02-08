@@ -76,14 +76,14 @@ export default function ManageTasksScreen({ navigation }) {
   return (
     <View style={styles.container}>
       
+      {/* Updated Header with Back Arrow */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon name="menu" size={24} color="#000" />
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Icon name="arrow-back-outline" size={24} color="#000" />
         </TouchableOpacity>
         <Text style={styles.title}>Manage Tasks</Text>
       </View>
 
-      
       <FlatList
         data={tasks}
         renderItem={renderTask}
@@ -129,7 +129,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     color: '#000',
-    marginLeft: 10,
+    marginLeft: 10, // Adds spacing between the arrow and title
+  },
+  backButton: {
+    padding: 10,
+    marginTop: -3, // Lifts the back arrow slightly
   },
   taskList: {
     paddingHorizontal: 10,

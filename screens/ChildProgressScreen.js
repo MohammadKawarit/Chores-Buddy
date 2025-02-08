@@ -13,7 +13,13 @@ export default function ChildProgressScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Child Progress</Text>
+      {/* Updated Header with Back Arrow */}
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Icon name="arrow-back-outline" size={24} color="#000" />
+        </TouchableOpacity>
+        <Text style={styles.title}>Child Progress</Text>
+      </View>
       
       <FlatList
         data={mockChildren}
@@ -48,21 +54,18 @@ export default function ChildProgressScreen() {
         )}
       />
 
-      
+      {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
-        
         <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ParentDashboard')}>
           <Icon name="home-outline" size={24} color="#870ae0" />
           <Text style={styles.navText}>Home</Text>
         </TouchableOpacity>
 
-        
         <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Store')}>
           <Icon name="storefront-outline" size={24} color="#000" />
           <Text style={styles.navText}>Store</Text>
         </TouchableOpacity>
 
-        
         <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ManageTasks')}>
           <Icon name="list-outline" size={24} color="#000" />
           <Text style={styles.navText}>Tasks</Text>
@@ -79,11 +82,24 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingBottom: 60, 
   },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center', 
+    paddingBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
   title: {
     fontSize: 22,
     fontWeight: 'bold',
-    marginBottom: 20,
+    color: '#030303',
+    marginLeft: 10, 
   },
+  backButton: {
+    padding: 10,
+    marginTop: -3, 
+  },
+
   childCard: {
     flexDirection: 'row',
     backgroundColor: '#e3cef2',
