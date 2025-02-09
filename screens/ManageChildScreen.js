@@ -31,11 +31,11 @@ export default function ManageChildScreen({ navigation }) {
           style={styles.editButton}
           onPress={() => navigation.navigate('ModifyChild', { child: item })}
         >
-          <Icon name="create-outline" size={20} color="#000" />
+          <Icon name="create-outline" size={27} color="#000" />
         </TouchableOpacity>
   
         <TouchableOpacity style={styles.deleteButton}>
-          <Icon name="trash-outline" size={20} color="#000" />
+          <Icon name="trash-outline" size={27} color="#000" />
         </TouchableOpacity>
       </View>
     </View>

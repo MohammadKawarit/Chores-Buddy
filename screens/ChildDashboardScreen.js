@@ -14,7 +14,7 @@ export default function ChildDashboardScreen({ navigation }) {
           <Icon name="notifications-outline" size={28} color="#000" style={styles.iconSpacing} />
           <Image
             style={styles.profileImage}
-            source={{ uri: 'https://randomuser.me/api/portraits/children/1.jpg' }}
+            source={{ uri: 'https://assets.api.uizard.io/api/cdn/stream/989d773b-ce04-426f-86f3-d7ddeeafb45e.png' }}
           />
         </View>
       </View>
@@ -22,16 +22,17 @@ export default function ChildDashboardScreen({ navigation }) {
       <View style={styles.profileSection}>
         <Image
           style={styles.profileImageLarge}
-          source={{ uri: 'https://randomuser.me/api/portraits/children/1.jpg' }}
+          source={{ uri: 'https://assets.api.uizard.io/api/cdn/stream/989d773b-ce04-426f-86f3-d7ddeeafb45e.png' }}
         />
         <Text style={styles.profileName}>Alex</Text>
       </View>
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Task Management</Text>
-        <TouchableOpacity style={styles.viewTasksButton} onPress={() => navigation.navigate('ManageTasks')}>
+        <TouchableOpacity style={styles.viewTasksButton} onPress={() => navigation.navigate('TasksScreen')}>
           <Text style={styles.buttonText}>View Tasks</Text>
         </TouchableOpacity>
+
         <Text style={styles.taskDetails}>Available Tasks: 4</Text>
         <Text style={styles.taskDetails}>Late Tasks: 2</Text>
         <Text style={styles.taskDetailsUndone}>Undone Tasks: 5</Text>
@@ -58,7 +59,7 @@ export default function ChildDashboardScreen({ navigation }) {
           <Icon name="cart-outline" size={28} color="#000" />
           <Text style={styles.navText}>Cart</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Store')}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ChildStoreScreen')}>
           <Icon name="storefront-outline" size={28} color="#000" />
           <Text style={styles.navText}>Store</Text>
         </TouchableOpacity>

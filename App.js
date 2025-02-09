@@ -26,6 +26,12 @@ import SettingsScreen from './screens/SettingsScreen';
 import ChildDashboardScreen from './screens/ChildDashboardScreen';
 import { BalanceProvider } from './context/BalanceContext';
 import { MenuProvider } from 'react-native-popup-menu';
+import TasksScreen from './screens/TasksScreen';
+import TaskVerificationScreen from './screens/TaskVerificationScreen';
+import AllTasksScreen from './screens/AllTasksScreen';
+import CompletedTasksScreen from './screens/CompletedTasksScreen';
+import ChildStoreScreen from './screens/ChildStoreScreen';
+
 
 const Stack = createStackNavigator();
 
@@ -58,6 +64,12 @@ export default function App() {
             <Stack.Screen name="ModifyChild" component={ModifyChildScreen} />
             <Stack.Screen name="Profile" component={ProfileScreen} />
             <Stack.Screen name="Settings" component={SettingsScreen} />
+            <Stack.Screen name="TasksScreen" component={TasksScreen} />
+            <Stack.Screen name="TaskVerificationScreen" component={TaskVerificationScreen} />
+            <Stack.Screen name="AllTasksScreen" component={AllTasksScreen} />
+            <Stack.Screen name="CompletedTasksScreen" component={CompletedTasksScreen} />         
+            <Stack.Screen name="ChildStoreScreen" component={ChildStoreScreen} />
+   
 
           </Stack.Navigator>
         </NavigationContainer>
