@@ -3,9 +3,8 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 export default function TasksDetailsScreen({ route, navigation }) {
-  const { child } = route.params; 
+  const child = route.params?.child || { name: 'Unknown', image: 'https://via.placeholder.com/100' };
 
-  // Mock task data
   const taskStats = {
     completed: 15,
     inProgress: 5,
@@ -15,7 +14,7 @@ export default function TasksDetailsScreen({ route, navigation }) {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
+ 
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="arrow-back-outline" size={24} color="#000" />
@@ -23,13 +22,11 @@ export default function TasksDetailsScreen({ route, navigation }) {
         <Text style={styles.title}>Child Progress</Text>
       </View>
 
-      {/* Child Info */}
       <View style={styles.childInfo}>
         <Image source={{ uri: child.image }} style={styles.childImage} />
         <Text style={styles.childName}>{child.name}</Text>
       </View>
 
-      {/* Task Statistics */}
       <View style={styles.taskCard}><Text style={styles.taskText}>Tasks Completed: {taskStats.completed}</Text></View>
       <View style={styles.taskCard}><Text style={styles.taskText}>In Progress Tasks: {taskStats.inProgress}</Text></View>
       <View style={styles.taskCard}><Text style={styles.taskText}>Undone Tasks: {taskStats.undone}</Text></View>

@@ -1,41 +1,30 @@
-import React, { useState } from 'react';
-import { View, Text, FlatList, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import React from 'react';
+import { View, Text, Image, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-export default function ChildStoreScreen({ navigation }) {
-  const [searchQuery, setSearchQuery] = useState('');
-  
-  const storeItems = [
+export default function ViewItemScreen({ route, navigation }) {
+  const { item } = route.params; 
+
+  const similarItems = [
     {
       id: '1',
       name: 'Gaming Console',
-      points: 500,
-      description: 'Experience immersive gaming with high-speed performance.',
       image: 'https://via.placeholder.com/100',
     },
     {
       id: '2',
-      name: 'Colouring Pens',
-      points: 150,
-      description: 'Vibrant colors for your creative drawings.',
+      name: 'Retro Console',
       image: 'https://via.placeholder.com/100',
     },
     {
       id: '3',
-      name: 'Remote Controller',
-      points: 300,
-      description: 'Wireless controller for smooth experience.',
+      name: 'Wireless Controller',
       image: 'https://via.placeholder.com/100',
     },
   ];
 
-  const filteredItems = storeItems.filter((item) =>
-    item.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
   return (
     <View style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Icon name="arrow-back-outline" size={28} color="#000" />
@@ -47,39 +36,29 @@ export default function ChildStoreScreen({ navigation }) {
         </View>
       </View>
 
-      {/* Search Bar */}
-      <View style={styles.searchContainer}>
-        <Icon name="search-outline" size={20} color="#666" style={styles.searchIcon} />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search"
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-        />
-      </View>
+      <Image source={{ uri: item.image }} style={styles.itemImage} />
+      <Text style={styles.itemTitle}>{item.name}</Text>
+      <Text style={styles.itemPoints}>{item.points} pts</Text>
 
-      {/* Store Items List */}
+      <TouchableOpacity style={styles.addToCartButton}>
+        <Icon name="cart-outline" size={24} color="#fff" />
+        <Text style={styles.addToCartText}>Add to cart</Text>
+      </TouchableOpacity>
+
+      <Text style={styles.itemDescription}>{item.description}</Text>
+
+      <Text style={styles.sectionTitle}>Similar Items</Text>
       <FlatList
-        data={filteredItems}
+        horizontal
+        data={similarItems}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => navigation.navigate('ViewItemScreen', { item })}>
-            <View style={styles.itemCard}>
-              <Image source={{ uri: item.image }} style={styles.itemImage} />
-              <View style={styles.itemInfo}>
-                <Text style={styles.itemTitle}>{item.name}</Text>
-                <Text style={styles.itemPoints}>{item.points} pts</Text>
-                <Text style={styles.itemDescription}>{item.description}</Text>
-              </View>
-              <TouchableOpacity style={styles.cartButton}>
-                <Icon name="cart-outline" size={24} color="#870ae0" />
-              </TouchableOpacity>
-            </View>
+          <TouchableOpacity style={styles.similarItem}>
+            <Image source={{ uri: item.image }} style={styles.similarImage} />
           </TouchableOpacity>
         )}
       />
 
-      {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
         <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ChildDashboard')}>
           <Icon name="home-outline" size={24} color="#870ae0" />
@@ -114,31 +93,25 @@ const styles = StyleSheet.create({
   pointsContainer: { flexDirection: 'row', alignItems: 'center' },
   pointsText: { fontSize: 16, marginLeft: 5, fontWeight: 'bold', color: '#000' },
 
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#f1f1f1',
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    marginTop: 10,
-  },
-  searchIcon: { marginRight: 5 },
-  searchInput: { flex: 1, height: 40 },
+  itemImage: { width: '100%', height: 200, borderRadius: 10, marginVertical: 10 },
+  itemTitle: { fontSize: 20, fontWeight: 'bold', color: '#000' },
+  itemPoints: { fontSize: 16, fontWeight: 'bold', color: '#870ae0', marginVertical: 5 },
+  itemDescription: { fontSize: 14, color: '#666', marginVertical: 10 },
 
-  itemCard: {
+  addToCartButton: {
     flexDirection: 'row',
-    backgroundColor: '#f7f7f7',
-    padding: 15,
-    borderRadius: 8,
+    backgroundColor: '#870ae0',
+    padding: 10,
+    borderRadius: 6,
     alignItems: 'center',
-    marginVertical: 8,
+    justifyContent: 'center',
+    marginVertical: 10,
   },
-  itemImage: { width: 50, height: 50, borderRadius: 8, marginRight: 15 },
-  itemInfo: { flex: 1 },
-  itemTitle: { fontSize: 16, fontWeight: 'bold' },
-  itemPoints: { fontSize: 14, fontWeight: 'bold', color: '#870ae0' },
-  itemDescription: { fontSize: 12, color: '#666' },
-  cartButton: { padding: 10 },
+  addToCartText: { color: '#ffffff', fontSize: 16, fontWeight: 'bold', marginLeft: 8 },
+
+  sectionTitle: { fontSize: 18, fontWeight: 'bold', color: '#030303', marginVertical: 10 },
+  similarItem: { marginRight: 10 },
+  similarImage: { width: 80, height: 80, borderRadius: 6 },
 
   bottomNav: {
     position: 'absolute',

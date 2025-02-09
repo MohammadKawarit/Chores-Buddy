@@ -7,7 +7,7 @@ export default function ChildDashboardScreen({ navigation }) {
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity>
-          <Icon name="menu" size={28} color="#000" />
+          <Icon name="menu" size={28} color="#000" onPress={() => navigation.navigate('Profile')}></Icon>
         </TouchableOpacity>
         <Text style={styles.title}>Child Dashboard</Text>
         <View style={styles.headerIcons}>
@@ -46,7 +46,7 @@ export default function ChildDashboardScreen({ navigation }) {
         </View>
       </View>
 
-      <TouchableOpacity style={styles.trackProgressButton} onPress={() => navigation.navigate('Trophies')}>
+      <TouchableOpacity style={styles.trackProgressButton} onPress={() => navigation.navigate('TaskProgressTrophiesScreen')}>
         <Text style={styles.buttonText}>Track Progress & Trophies</Text>
       </TouchableOpacity>
 
@@ -55,7 +55,7 @@ export default function ChildDashboardScreen({ navigation }) {
           <Icon name="home-outline" size={28} color="#870ae0" />
           <Text style={styles.navText}>Home</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Cart')}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('CartScreen')}>
           <Icon name="cart-outline" size={28} color="#000" />
           <Text style={styles.navText}>Cart</Text>
         </TouchableOpacity>

@@ -17,11 +17,12 @@ const mockTrophies = [
 ];
 
 export default function TrophiesScreen({ route, navigation }) {
-  const { child } = route.params; 
+  const child = route.params?.child || { name: 'Unknown', image: 'https://via.placeholder.com/100' };
 
   return (
     <View style={styles.container}>
     
+    <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="arrow-back-outline" size={24} color="#000" />
@@ -29,11 +30,12 @@ export default function TrophiesScreen({ route, navigation }) {
         <Text style={styles.title}>Child Progress</Text>
       </View>
 
-    
       <View style={styles.childInfo}>
         <Text style={styles.sectionTitle}>Trophies Earned By {child.name}</Text>
         <Image source={{ uri: child.image }} style={styles.childImage} />
       </View>
+
+    </View>
 
       
       <FlatList

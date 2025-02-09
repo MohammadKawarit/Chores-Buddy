@@ -31,6 +31,10 @@ import TaskVerificationScreen from './screens/TaskVerificationScreen';
 import AllTasksScreen from './screens/AllTasksScreen';
 import CompletedTasksScreen from './screens/CompletedTasksScreen';
 import ChildStoreScreen from './screens/ChildStoreScreen';
+import ViewItemScreen from './screens/ViewItemScreen';
+import CartScreen from './screens/CartScreen';
+import TaskProgressTrophiesScreen from './screens/TaskProgressTrophiesScreen';
+import LeaderboardScreen from './screens/LeaderboardScreen';
 
 
 const Stack = createStackNavigator();
@@ -69,6 +73,12 @@ export default function App() {
             <Stack.Screen name="AllTasksScreen" component={AllTasksScreen} />
             <Stack.Screen name="CompletedTasksScreen" component={CompletedTasksScreen} />         
             <Stack.Screen name="ChildStoreScreen" component={ChildStoreScreen} />
+            <Stack.Screen name="ViewItemScreen" component={ViewItemScreen} />
+            <Stack.Screen name="Cart" component={CartScreen} />
+            <Stack.Screen name="TaskProgressTrophiesScreen" component={TaskProgressTrophiesScreen} />
+            <Stack.Screen name="Leaderboard" component={LeaderboardScreen} />
+
+
    
 
           </Stack.Navigator>

@@ -59,7 +59,7 @@ export default function TasksScreen({ navigation }) {
           <Icon name="cart-outline" size={24} color="#000" />
           <Text style={styles.navText}>Cart</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Store')}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ChildStoreScreen')}>
           <Icon name="storefront-outline" size={24} color="#000" />
           <Text style={styles.navText}>Store</Text>
         </TouchableOpacity>
