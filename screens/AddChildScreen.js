@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 export default function AddChildScreen({ navigation }) {
   return (
     <View style={styles.container}>
-      {/* Header */}
+
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="arrow-back" size={24} color="#000" />
@@ -13,7 +13,6 @@ export default function AddChildScreen({ navigation }) {
         <Text style={styles.title}>Add Child</Text>
       </View>
 
-      {/* Form */}
       <View style={styles.form}>
         <View style={styles.avatarContainer}>
           <TouchableOpacity style={styles.avatarButton}>
@@ -34,7 +33,6 @@ export default function AddChildScreen({ navigation }) {
         </TouchableOpacity>
       </View>
 
-      {/* Footer Navigation */}
       <View style={styles.bottomNav}>
          <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ParentDashboard')}>
           <Icon name="home-outline" size={24} color="#870ae0" />

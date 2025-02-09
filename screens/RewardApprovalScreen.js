@@ -67,19 +67,16 @@ const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', marginBottom: 20 },
   title: { fontSize: 20, fontWeight: 'bold', marginLeft: 10, color: '#030303' },
 
-  /* Reward Selection Card */
   rewardCard: { backgroundColor: '#f7f7f7', padding: 15, borderRadius: 6, alignItems: 'center', marginBottom: 20 },
   sectionTitle: { fontSize: 18, fontWeight: 'bold', color: '#030303', marginBottom: 5 },
   description: { fontSize: 14, color: '#666', marginBottom: 10, textAlign: 'center' },
   rewardImage: { width: 150, height: 150, borderRadius: 6, marginBottom: 15 },
 
-  /* Buttons */
   buttonRow: { flexDirection: 'row', justifyContent: 'space-between', width: '100%' },
   approveButton: { flex: 1, backgroundColor: '#870ae0', padding: 12, borderRadius: 6, alignItems: 'center', marginRight: 5 },
   declineButton: { flex: 1, backgroundColor: '#870ae0', padding: 12, borderRadius: 6, alignItems: 'center', marginLeft: 5 },
   buttonText: { color: 'white', fontSize: 16, fontWeight: 'bold' },
 
-  /* Bottom Navigation */
   bottomNav: {
     position: 'absolute', bottom: 0, left: 0, right: 0,
     backgroundColor: '#ffffff', flexDirection: 'row', justifyContent: 'space-around',

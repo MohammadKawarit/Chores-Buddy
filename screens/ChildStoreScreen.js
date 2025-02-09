@@ -35,7 +35,6 @@ export default function ChildStoreScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Icon name="arrow-back-outline" size={28} color="#000" />
@@ -47,7 +46,6 @@ export default function ChildStoreScreen({ navigation }) {
         </View>
       </View>
 
-      {/* Search Bar */}
       <View style={styles.searchContainer}>
         <Icon name="search-outline" size={20} color="#666" style={styles.searchIcon} />
         <TextInput
@@ -58,7 +56,6 @@ export default function ChildStoreScreen({ navigation }) {
         />
       </View>
 
-      {/* Store Items List */}
       <FlatList
         data={filteredItems}
         keyExtractor={(item) => item.id}
@@ -79,7 +76,6 @@ export default function ChildStoreScreen({ navigation }) {
         )}
       />
 
-      {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
         <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ChildDashboard')}>
           <Icon name="home-outline" size={24} color="#870ae0" />

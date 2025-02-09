@@ -13,7 +13,6 @@ export default function ChildProgressScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Updated Header with Back Arrow */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Icon name="arrow-back-outline" size={24} color="#000" />
@@ -54,7 +53,6 @@ export default function ChildProgressScreen() {
         )}
       />
 
-      {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
         <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ParentDashboard')}>
           <Icon name="home-outline" size={24} color="#870ae0" />

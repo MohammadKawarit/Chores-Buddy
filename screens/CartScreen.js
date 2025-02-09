@@ -10,7 +10,7 @@ export default function CartScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
+
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Icon name="arrow-back-outline" size={28} color="#000" />
@@ -22,7 +22,6 @@ export default function CartScreen({ navigation }) {
         </View>
       </View>
 
-      {/* Cart Items */}
       <FlatList
         data={cartItems}
         keyExtractor={(item) => item.id}
@@ -38,18 +37,15 @@ export default function CartScreen({ navigation }) {
         )}
       />
 
-      {/* Total Section */}
       <View style={styles.totalContainer}>
         <Text style={styles.totalText}>Total: </Text>
         <Text style={styles.totalPoints}>1500 pts</Text>
       </View>
 
-      {/* Send for Verification Button */}
       <TouchableOpacity style={styles.verifyButton}>
         <Text style={styles.verifyButtonText}>Send for Verification</Text>
       </TouchableOpacity>
 
-      {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
         <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ChildDashboard')}>
           <Icon name="home-outline" size={24} color="#870ae0" />

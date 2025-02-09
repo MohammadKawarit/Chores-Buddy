@@ -14,13 +14,10 @@ export default function ParentDashboardScreen({ navigation }) {
 
   const [showDropdown, setShowDropdown] = useState(false);
 
-  // Toggle dropdown visibility
   const toggleDropdown = () => setShowDropdown(!showDropdown);
 
-  // Hide dropdown when clicking outside
   const hideDropdown = () => setShowDropdown(false);
 
-  // Mark all as read
   const markAsRead = () => {
     setNotifications((prev) => prev.map((notif) => ({ ...notif, isRead: true })));
   };
@@ -51,7 +48,6 @@ export default function ParentDashboardScreen({ navigation }) {
           </View>
         </View>
 
-        {/* Notification Dropdown */}
         {showDropdown && (
           <View style={styles.dropdown}>
             <FlatList
@@ -69,7 +65,6 @@ export default function ParentDashboardScreen({ navigation }) {
           </View>
         )}
 
-        {/* Content */}
         <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
           <View style={styles.balanceContainer}>
             <Text style={styles.balanceLabel}>Current Balance:</Text>
@@ -98,7 +93,6 @@ export default function ParentDashboardScreen({ navigation }) {
           </TouchableOpacity>
         </ScrollView>
 
-        {/* Bottom Navigation */}
         <View style={styles.bottomNav}>
           <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ParentDashboard')}>
             <Icon name="home-outline" size={24} color="#870ae0" />

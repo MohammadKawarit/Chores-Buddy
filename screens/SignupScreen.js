@@ -6,7 +6,6 @@ export default function SignupScreen() {
   const navigation = useNavigation();
 
   const handleSignup = () => {
-    // Navigate to Parent Dashboard
     navigation.navigate('ParentDashboard');
   };
 
