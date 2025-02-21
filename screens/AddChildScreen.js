@@ -1,11 +1,55 @@
-import React from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useRoute, useNavigation } from '@react-navigation/native';
 
-export default function AddChildScreen({ navigation }) {
+export default function AddChildScreen() {
+  const route = useRoute();
+  const navigation = useNavigation();
+  const { parentId } = route.params || {}; // Get parentId from navigation params
+
+  const [childName, setChildName] = useState('');
+  const [dob, setDob] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleAddChild = async () => {
+    if (!childName || !dob || !email || !password) {
+      Alert.alert('Error', 'Please fill in all fields.');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch(
+        `https://choresbuddy-dotnet.onrender.com/api/User/addChild?name=${childName}&email=${email}&password=${password}&parentId=${parentId}&dob=${dob}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'text/plain',
+          },
+          body: '',
+        }
+      );
+
+      if (response.ok) {
+        Alert.alert('Success', 'Child added successfully.');
+        navigation.goBack(); // Return to previous screen
+      } else {
+        Alert.alert('Error', 'Failed to add child.');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Something went wrong.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <View style={styles.container}>
-
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="arrow-back" size={24} color="#000" />
@@ -14,27 +58,25 @@ export default function AddChildScreen({ navigation }) {
       </View>
 
       <View style={styles.form}>
-        <View style={styles.avatarContainer}>
-          <TouchableOpacity style={styles.avatarButton}>
-            <Icon name="add-outline" size={24} color="#870ae0" />
-          </TouchableOpacity>
-        </View>
         <Text style={styles.label}>Child Name</Text>
-        <TextInput style={styles.input} placeholder="Enter child's name" />
-        <Text style={styles.label}>Date of Birth</Text>
-        <TextInput style={styles.input} placeholder="YYYY-MM-DD" />
-        <Text style={styles.label}>Email Address</Text>
-        <TextInput style={styles.input} placeholder="Enter email address" />
-        <Text style={styles.label}>Password</Text>
-        <TextInput style={styles.input} placeholder="Enter password" secureTextEntry={true} />
+        <TextInput style={styles.input} placeholder="Enter child's name" value={childName} onChangeText={setChildName} />
 
-        <TouchableOpacity style={styles.addButton}>
-          <Text style={styles.addButtonText}>Add Child</Text>
+        <Text style={styles.label}>Date of Birth</Text>
+        <TextInput style={styles.input} placeholder="YYYY-MM-DD" value={dob} onChangeText={setDob} />
+
+        <Text style={styles.label}>Email Address</Text>
+        <TextInput style={styles.input} placeholder="Enter email address" value={email} onChangeText={setEmail} keyboardType="email-address" />
+
+        <Text style={styles.label}>Password</Text>
+        <TextInput style={styles.input} placeholder="Enter password" value={password} onChangeText={setPassword} secureTextEntry />
+
+        <TouchableOpacity style={styles.addButton} onPress={handleAddChild} disabled={loading}>
+          <Text style={styles.addButtonText}>{loading ? 'Adding...' : 'Add Child'}</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.bottomNav}>
-         <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ParentDashboard')}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ParentDashboard')}>
           <Icon name="home-outline" size={24} color="#870ae0" />
           <Text style={styles.navText}>Home</Text>
         </TouchableOpacity>

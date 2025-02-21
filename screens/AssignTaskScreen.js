@@ -1,11 +1,58 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, Image, StyleSheet, FlatList, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useRoute, useNavigation } from '@react-navigation/native';
 
-export default function AssignTaskScreen({ navigation }) {
+export default function AssignTaskScreen() {
+  const route = useRoute();
+  const navigation = useNavigation();
+  const { userId } = route.params || {}; // Get parentId from navigation params
+
+  const [children, setChildren] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (userId) {
+      fetchChildren();
+    }
+  }, [userId]);
+
+  const fetchChildren = async () => {
+    try {
+      const response = await fetch(`https://choresbuddy-dotnet.onrender.com/api/User/${userId}/children`);
+      if (response.ok) {
+        const data = await response.json();
+        setChildren(data);
+      } else {
+        Alert.alert('Error', 'Failed to load children.');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Something went wrong while fetching children.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const renderChild = ({ item }) => (
+    <View style={styles.card}>
+      <Image
+        style={styles.profileImage}
+        source={{
+          uri: 'https://cdn-icons-png.flaticon.com/512/147/147144.png', // Placeholder image
+        }}
+      />
+      <Text style={styles.name}>{item.name}</Text>
+      <TouchableOpacity
+        style={styles.assignButton}
+        onPress={() => navigation.navigate('TaskDetails', { child: item })}
+      >
+        <Text style={styles.assignButtonText}>Assign Task</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
   return (
     <View style={styles.container}>
-
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="arrow-back" size={24} color="#000" />
@@ -16,49 +63,30 @@ export default function AssignTaskScreen({ navigation }) {
       <View style={styles.content}>
         <Text style={styles.subtitle}>Assign Task To:</Text>
 
-        <View style={styles.card}>
-          <Image
-            style={styles.profileImage}
-            source={{
-              uri: 'https://assets.api.uizard.io/api/cdn/stream/f92045e7-dd2c-42df-a9d0-1b6af48418dd.png',
-            }}
+        {loading ? (
+          <Text style={styles.loadingText}>Loading...</Text>
+        ) : children.length === 0 ? (
+          <Text style={styles.noChildText}>No children found.</Text>
+        ) : (
+          <FlatList
+            data={children}
+            renderItem={renderChild}
+            keyExtractor={(item) => item.userId.toString()}
+            contentContainerStyle={styles.childList}
           />
-          <Text style={styles.name}>Emily</Text>
-          <TouchableOpacity
-            style={styles.assignButton}
-            onPress={() => navigation.navigate('TaskDetails', { child: 'Emily' })}
-          >
-            <Text style={styles.assignButtonText}>Assign Task</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.card}>
-          <Image
-            style={styles.profileImage}
-            source={{
-              uri: 'https://assets.api.uizard.io/api/cdn/stream/989d773b-ce04-426f-86f3-d7ddeeafb45e.png',
-            }}
-          />
-          <Text style={styles.name}>Alex</Text>
-          <TouchableOpacity
-            style={styles.assignButton}
-            onPress={() => navigation.navigate('TaskDetails', { child: 'Alex' })}
-          >
-            <Text style={styles.assignButtonText}>Assign Task</Text>
-          </TouchableOpacity>
-        </View>
+        )}
       </View>
 
       <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ParentDashboard')}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ParentDashboard', { userId })}>
           <Icon name="home-outline" size={24} color="#870ae0" />
           <Text style={styles.navText}>Home</Text>
-          </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Store')}>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Store', { userId })}>
           <Icon name="storefront-outline" size={24} color="#000" />
           <Text style={styles.navText}>Store</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ManageTasks')}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ManageTasks', { userId })}>
           <Icon name="list-outline" size={24} color="#000" />
           <Text style={styles.navText}>Tasks</Text>
         </TouchableOpacity>

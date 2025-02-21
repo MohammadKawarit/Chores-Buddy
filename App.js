@@ -22,7 +22,6 @@ import StoreScreen from './screens/StoreScreen';
 import CheckoutScreen from './screens/CheckoutScreen';
 import ModifyChildScreen from './screens/ModifyChildScreen';
 import ProfileScreen from './screens/ProfileScreen';
-import SettingsScreen from './screens/SettingsScreen';
 import ChildDashboardScreen from './screens/ChildDashboardScreen';
 import { BalanceProvider } from './context/BalanceContext';
 import { MenuProvider } from 'react-native-popup-menu';
@@ -67,7 +66,6 @@ export default function App() {
             <Stack.Screen name="Checkout" component={CheckoutScreen} />
             <Stack.Screen name="ModifyChild" component={ModifyChildScreen} />
             <Stack.Screen name="Profile" component={ProfileScreen} />
-            <Stack.Screen name="Settings" component={SettingsScreen} />
             <Stack.Screen name="TasksScreen" component={TasksScreen} />
             <Stack.Screen name="TaskVerificationScreen" component={TaskVerificationScreen} />
             <Stack.Screen name="AllTasksScreen" component={AllTasksScreen} />

@@ -1,23 +1,57 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet, FlatList, ScrollView, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { 
+  View, Text, TouchableOpacity, Image, StyleSheet, FlatList, ScrollView, 
+  TouchableWithoutFeedback, Keyboard, Alert 
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useBalance } from '../context/BalanceContext';
+import { useRoute, useNavigation } from '@react-navigation/native';
 
-export default function ParentDashboardScreen({ navigation }) {
-  const { balance } = useBalance();
+export default function ParentDashboardScreen() {
+  const route = useRoute();
+  const navigation = useNavigation();
+  const { userId } = route.params || {}; // Get userId from navigation params
 
-  const [notifications, setNotifications] = useState([
-    { id: '1', message: 'Alex has completed a task!', isRead: false },
-    { id: '2', message: 'Emily has earned a new trophy!', isRead: false },
-    { id: '3', message: 'New reward is available in the store.', isRead: true },
-  ]);
-
+  const [balance, setBalance] = useState(0);
+  const [notifications, setNotifications] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
 
+  useEffect(() => {
+    if (userId) {
+      fetchBalance();
+      fetchNotifications();
+    }
+  }, [userId]);
+
+  const fetchBalance = async () => {
+    try {
+      const response = await fetch(`https://choresbuddy-dotnet.onrender.com/api/User/${userId}/balance`);
+      if (response.ok) {
+        const data = await response.json();
+        setBalance(data.balance);
+      } else {
+        Alert.alert('Error', 'Failed to fetch balance');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Something went wrong while fetching balance.');
+    }
+  };
+
+  const fetchNotifications = async () => {
+    try {
+      const response = await fetch(`https://choresbuddy-dotnet.onrender.com/api/Notification/${userId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setNotifications(data);
+      } else {
+        Alert.alert('Error', 'Failed to load notifications.');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Something went wrong while fetching notifications.');
+    }
+  };
+
   const toggleDropdown = () => setShowDropdown(!showDropdown);
-
   const hideDropdown = () => setShowDropdown(false);
-
   const markAsRead = () => {
     setNotifications((prev) => prev.map((notif) => ({ ...notif, isRead: true })));
   };
@@ -29,7 +63,7 @@ export default function ParentDashboardScreen({ navigation }) {
       <View style={styles.container}>
         {/* Header */}
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.navigate('Profile')} style={{ padding: 15 }}>
+          <TouchableOpacity onPress={() => navigation.navigate('Profile', { userId })} style={{ padding: 15 }}>
             <Icon name="menu-outline" size={30} color="#000" />
           </TouchableOpacity>
 
@@ -52,7 +86,7 @@ export default function ParentDashboardScreen({ navigation }) {
           <View style={styles.dropdown}>
             <FlatList
               data={notifications}
-              keyExtractor={(item) => item.id}
+              keyExtractor={(item) => item.notification_id.toString()}
               renderItem={({ item }) => (
                 <View style={[styles.notificationItem, item.isRead && styles.readNotification]}>
                   <Text style={styles.notificationText}>{item.message}</Text>
@@ -72,37 +106,37 @@ export default function ParentDashboardScreen({ navigation }) {
           </View>
 
           <Text style={styles.sectionTitle}>Child Overview</Text>
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ManageChild')}>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ManageChild', { userId })}>
             <Text style={styles.buttonText}>Manage Child</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ChildProgress')}>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ChildProgress', { userId })}>
             <Text style={styles.buttonText}>Child Progress</Text>
           </TouchableOpacity>
 
           <Text style={styles.sectionTitle}>Task Management</Text>
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AssignTask')}>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AssignTask', { userId })}>
             <Text style={styles.buttonText}>Assign New Task</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ManageTasks')}>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ManageTasks', { userId })}>
             <Text style={styles.buttonText}>Manage Tasks</Text>
           </TouchableOpacity>
 
           <Text style={styles.sectionTitle}>Store Management</Text>
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ManageStore')}>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ManageStore', { userId })}>
             <Text style={styles.buttonText}>Manage Child Store</Text>
           </TouchableOpacity>
         </ScrollView>
 
         <View style={styles.bottomNav}>
-          <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ParentDashboard')}>
+          <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ParentDashboard', { userId })}>
             <Icon name="home-outline" size={24} color="#870ae0" />
             <Text style={styles.navText}>Home</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Store')}>
+          <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Store', { userId })}>
             <Icon name="storefront-outline" size={24} color="#000" />
             <Text style={styles.navText}>Store</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ManageTasks')}>
+          <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ManageTasks', { userId })}>
             <Icon name="list-outline" size={24} color="#000" />
             <Text style={styles.navText}>Tasks</Text>
           </TouchableOpacity>

@@ -1,13 +1,104 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 export default function TaskProgressScreen({ route, navigation }) {
   const { task } = route.params;
+  const [childName, setChildName] = useState('Loading...');
+
+  useEffect(() => {
+    fetchChildName();
+  }, []);
+
+  const fetchChildName = async () => {
+    try {
+      const response = await fetch(`https://choresbuddy-dotnet.onrender.com/api/User/${task.assignedTo}`);
+      if (response.ok) {
+        const data = await response.json();
+        setChildName(data.name);
+      } else {
+        setChildName('Unknown');
+      }
+    } catch (error) {
+      console.error('Error fetching child info:', error);
+      setChildName('Unknown');
+    }
+  };
+
+  const handleVerifyTask = async () => {
+    Alert.alert(
+      'Confirm Verification',
+      'Are you sure you want to verify this task and release points?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Verify',
+          onPress: async () => {
+            try {
+              const response = await fetch(
+                `https://choresbuddy-dotnet.onrender.com/api/Task/${task.taskId}/verify`,
+                {
+                  method: 'PUT',
+                  headers: {
+                    'Accept': '*/*',
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify("string"),
+                }
+              );
+
+              if (response.ok) {
+                Alert.alert('Success', 'Task verified and points released.');
+                navigation.goBack();
+              } else {
+                Alert.alert('Error', 'Failed to verify task.');
+              }
+            } catch (error) {
+              Alert.alert('Error', 'Something went wrong.');
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  const handleDeleteTask = async () => {
+    Alert.alert(
+      'Confirm Deletion',
+      'Are you sure you want to delete this task?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          onPress: async () => {
+            try {
+              const response = await fetch(
+                `https://choresbuddy-dotnet.onrender.com/api/Task/${task.taskId}`,
+                {
+                  method: 'DELETE',
+                  headers: {
+                    'Accept': '*/*',
+                  },
+                }
+              );
+
+              if (response.ok) {
+                Alert.alert('Success', 'Task deleted successfully.');
+                navigation.goBack();
+              } else {
+                Alert.alert('Error', 'Failed to delete task.');
+              }
+            } catch (error) {
+              Alert.alert('Error', 'Something went wrong.');
+            }
+          },
+        },
+      ]
+    );
+  };
 
   return (
     <View style={styles.container}>
-      
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="arrow-back" size={24} color="#000" />
@@ -15,7 +106,6 @@ export default function TaskProgressScreen({ route, navigation }) {
         <Text style={styles.title}>Task Progress</Text>
       </View>
 
-      
       <View style={styles.content}>
         <View style={styles.card}>
           <View style={styles.taskDetailsHeader}>
@@ -23,28 +113,29 @@ export default function TaskProgressScreen({ route, navigation }) {
             <Text style={styles.points}>Points: {task.points}</Text>
           </View>
           <Text style={styles.taskDetailsText}>Task: {task.title}</Text>
-          <Text style={styles.taskDetailsText}>Assigned to: {task.assignedTo}</Text>
-          <Text style={styles.taskDetailsText}>Due Date: {task.deadline}</Text>
+          <Text style={styles.taskDetailsText}>Assigned to: {childName}</Text>
+          <Text style={styles.taskDetailsText}>Due Date: {new Date(task.deadline).toLocaleString()}</Text>
           <Text style={styles.taskDetailsText}>
-            Submitted Date: {task.submittedDate || 'Not submitted yet'}
+            Submitted Date: {task.submittedDate ? new Date(task.submittedDate).toLocaleString() : 'Not submitted yet'}
           </Text>
           <Image style={styles.image} source={{ uri: task.image }} />
         </View>
 
-        
-        <TouchableOpacity style={styles.verifyButton}>
-          <Text style={styles.verifyButtonText}>Verify to release points</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.deleteButton}>
+        {task.status !== 'COMPLETED' && (
+          <TouchableOpacity style={styles.verifyButton} onPress={handleVerifyTask}>
+            <Text style={styles.verifyButtonText}>Verify to release points</Text>
+          </TouchableOpacity>
+        )}
+
+        <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteTask}>
           <Text style={styles.deleteButtonText}>Delete Task</Text>
         </TouchableOpacity>
       </View>
 
-      
       <View style={styles.bottomNav}>
         <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ParentDashboard')}>
-         <Icon name="home-outline" size={24} color="#870ae0" />
-         <Text style={styles.navText}>Home</Text>
+          <Icon name="home-outline" size={24} color="#870ae0" />
+          <Text style={styles.navText}>Home</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Store')}>
           <Icon name="storefront-outline" size={24} color="#000" />

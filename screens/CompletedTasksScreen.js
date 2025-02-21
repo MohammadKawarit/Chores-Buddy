@@ -1,16 +1,65 @@
-import React from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useRoute, useNavigation } from '@react-navigation/native';
 
-export default function CompletedTasksScreen({ navigation }) {
-  const tasks = [
-    { id: '1', title: 'Take the garbage out', points: 50, due: 'October 10, 2024', status: 'Done' },
-    { id: '2', title: 'Brush your teeth', points: 50, due: 'October 12, 2024', status: 'Done' },
-    { id: '3', title: 'Clean Bedroom', points: 50, due: 'October 20, 2023', status: 'Done' },
-  ];
+export default function CompletedTasksScreen() {
+  const route = useRoute();
+  const navigation = useNavigation();
+  const { userId } = route.params || {}; // Get userId from navigation params
+
+  const [completedTasks, setCompletedTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (userId) {
+      fetchCompletedTasks();
+    }
+  }, [userId]);
+
+  const fetchCompletedTasks = async () => {
+    try {
+      const response = await fetch(`https://choresbuddy-dotnet.onrender.com/api/User/child/${userId}/profile`);
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setCompletedTasks(data.completedTasks || []);
+      } else {
+        setError(data.message || "Failed to load completed tasks.");
+      }
+    } catch (err) {
+      console.error("Error fetching completed tasks:", err);
+      setError("Something went wrong while fetching completed tasks.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color="#870ae0" />
+        <Text>Loading completed tasks...</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.centered}>
+        <Text style={styles.errorText}>{error}</Text>
+        <TouchableOpacity style={styles.retryButton} onPress={fetchCompletedTasks}>
+          <Text style={styles.buttonText}>Retry</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
+      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Icon name="arrow-back-outline" size={28} color="#000" />
@@ -21,29 +70,35 @@ export default function CompletedTasksScreen({ navigation }) {
         </TouchableOpacity>
       </View>
 
-      <FlatList
-        data={tasks}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.taskCard}>
-            <Text style={styles.taskTitle}>{item.title}</Text>
-            <Text style={styles.taskDetails}>Points: {item.points}</Text>
-            <Text style={styles.taskDetails}>Due: {item.due}</Text>
-            <Text style={styles.taskStatus}>Status: Done</Text>
-          </View>
-        )}
-      />
+      {/* Task List */}
+      {completedTasks.length === 0 ? (
+        <Text style={styles.noTasksText}>No completed tasks yet.</Text>
+      ) : (
+        <FlatList
+          data={completedTasks}
+          keyExtractor={(item) => item.taskId.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.taskCard}>
+              <Text style={styles.taskTitle}>{item.title}</Text>
+              <Text style={styles.taskDetails}>Points: {item.points}</Text>
+              <Text style={styles.taskDetails}>Due: {new Date(item.deadline).toLocaleDateString()}</Text>
+              <Text style={styles.taskStatus}>Status: Done</Text>
+            </View>
+          )}
+        />
+      )}
 
+      {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ChildDashboard')}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ChildDashboard', { userId })}>
           <Icon name="home-outline" size={24} color="#870ae0" />
           <Text style={styles.navText}>Home</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Cart')}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Cart', { userId })}>
           <Icon name="cart-outline" size={24} color="#000" />
           <Text style={styles.navText}>Cart</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ChildStoreScreen')}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ChildStoreScreen', { userId })}>
           <Icon name="storefront-outline" size={24} color="#000" />
           <Text style={styles.navText}>Store</Text>
         </TouchableOpacity>

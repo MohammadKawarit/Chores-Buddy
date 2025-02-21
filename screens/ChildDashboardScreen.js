@@ -1,103 +1,123 @@
-import React, { useState, useRef } from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet, FlatList, Pressable } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, Image, StyleSheet, FlatList, Alert, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useRoute, useNavigation } from '@react-navigation/native';
 
-export default function ChildDashboardScreen({ navigation }) {
-  const [notifications, setNotifications] = useState([
-    { id: '1', message: 'New task assigned: Math Homework', read: false },
-    { id: '2', message: 'Task verified: Cleaning Room', read: false },
-  ]);
+export default function ChildDashboardScreen() {
+  const route = useRoute();
+  const navigation = useNavigation();
+  const { userId } = route.params || {}; // Get userId from navigation params
 
-  const [showNotifications, setShowNotifications] = useState(false);
+  const [childProfile, setChildProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const markAllAsRead = () => {
-    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+  useEffect(() => {
+    if (userId) {
+      fetchChildProfile();
+    }
+  }, [userId]);
+
+  const fetchChildProfile = async () => {
+    try {
+      const response = await fetch(`https://choresbuddy-dotnet.onrender.com/api/User/child/${userId}/profile`);
+      const data = await response.json();
+
+      if (response.ok) {
+        setChildProfile(data);
+      } else {
+        setError(data.message || 'Failed to load profile.');
+      }
+    } catch (err) {
+      setError('Something went wrong while fetching the profile.');
+    } finally {
+      setLoading(false);
+    }
   };
+
+  if (loading) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color="#870ae0" />
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.centered}>
+        <Text style={styles.errorText}>{error}</Text>
+        <TouchableOpacity style={styles.retryButton} onPress={fetchChildProfile}>
+          <Text style={styles.buttonText}>Retry</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
-
+      {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+        <TouchableOpacity onPress={() => navigation.navigate('Profile', { userId })}>
           <Icon name="menu-outline" size={28} color="#000" />
         </TouchableOpacity>
         <Text style={styles.title}>Child Dashboard</Text>
 
-        <View style={styles.headerIcons}>
-          <TouchableOpacity
-            onPress={() => {
-              setShowNotifications(!showNotifications);
-              markAllAsRead();
-            }}
-          >
-            <Icon name="notifications-outline" size={28} color="#000" style={styles.iconSpacing} />
-            {notifications.some((n) => !n.read) && <View style={styles.notificationDot} />}
-          </TouchableOpacity>
-
-          <Image
-            style={styles.profileImage}
-            source={{ uri: 'https://assets.api.uizard.io/api/cdn/stream/989d773b-ce04-426f-86f3-d7ddeeafb45e.png' }}
-          />
-        </View>
+        <Image
+          style={styles.profileImage}
+          source={{ uri: 'https://cdn-icons-png.flaticon.com/512/2922/2922510.png' }}
+        />
       </View>
 
-      {showNotifications && (
-        <Pressable style={styles.overlay} onPress={() => setShowNotifications(false)}>
-          <View style={styles.notificationBox}>
-            <Text style={styles.notificationTitle}>Notifications</Text>
-            <FlatList
-              data={notifications}
-              keyExtractor={(item) => item.id}
-              renderItem={({ item }) => (
-                <View style={[styles.notificationItem, item.read ? styles.readNotification : {}]}>
-                  <Text style={styles.notificationText}>{item.message}</Text>
-                </View>
-              )}
-            />
-          </View>
-        </Pressable>
-      )}
-
+      {/* Profile Info */}
       <View style={styles.profileSection}>
         <Image
           style={styles.profileImageLarge}
-          source={{ uri: 'https://assets.api.uizard.io/api/cdn/stream/989d773b-ce04-426f-86f3-d7ddeeafb45e.png' }}
+          source={{ uri: 'https://cdn-icons-png.flaticon.com/512/2922/2922510.png' }}
         />
-        <Text style={styles.profileName}>Alex</Text>
+        <Text style={styles.profileName}>{childProfile.childName}</Text>
       </View>
 
+      {/* Tasks Section */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Task Management</Text>
-        <TouchableOpacity style={styles.viewTasksButton} onPress={() => navigation.navigate('TasksScreen')}>
+        <Text style={styles.sectionTitle}>Task Overview</Text>
+        <Text style={styles.taskDetails}>Available Tasks: {childProfile.availableTasks.length}</Text>
+        <Text style={styles.taskDetails}>Late Tasks: {childProfile.lateTasks.length}</Text>
+        <Text style={styles.taskDetailsUndone}>Completed Tasks: {childProfile.completedTasks.length}</Text>
+
+        <TouchableOpacity style={styles.viewTasksButton} onPress={() => navigation.navigate('TasksScreen', { userId })}>
           <Text style={styles.buttonText}>View Tasks</Text>
         </TouchableOpacity>
-        <Text style={styles.taskDetails}>Available Tasks: 4</Text>
-        <Text style={styles.taskDetails}>Late Tasks: 2</Text>
-        <Text style={styles.taskDetailsUndone}>Undone Tasks: 5</Text>
       </View>
 
+      {/* Points Section */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Points Balance</Text>
         <View style={styles.pointsContainer}>
           <Text style={styles.pointsLabel}>Your Points:</Text>
-          <Text style={styles.pointsValue}>1500</Text>
+          <Text style={styles.pointsValue}>{childProfile.points}</Text>
         </View>
       </View>
 
-      <TouchableOpacity style={styles.trackProgressButton} onPress={() => navigation.navigate('TaskProgressTrophiesScreen')}>
+      <TouchableOpacity
+        style={styles.trackProgressButton}
+        onPress={() => navigation.navigate('TaskProgressTrophiesScreen')}
+      >
         <Text style={styles.buttonText}>Track Progress & Trophies</Text>
       </TouchableOpacity>
 
+      {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ChildDashboard')}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ChildDashboard', { userId })}>
           <Icon name="home-outline" size={28} color="#870ae0" />
           <Text style={styles.navText}>Home</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('CartScreen')}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('CartScreen', { userId })}>
           <Icon name="cart-outline" size={28} color="#000" />
           <Text style={styles.navText}>Cart</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ChildStoreScreen')}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ChildStoreScreen', { userId })}>
           <Icon name="storefront-outline" size={28} color="#000" />
           <Text style={styles.navText}>Store</Text>
         </TouchableOpacity>

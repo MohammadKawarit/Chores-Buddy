@@ -1,65 +1,120 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, FlatList, StyleSheet, ActivityIndicator, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useRoute, useNavigation } from '@react-navigation/native';
 
-export default function TasksScreen({ navigation }) {
-  const tasks = [
-    { id: '1', title: 'Cleaning Bedroom', deadline: 'Tomorrow', points: 50 },
-    { id: '2', title: 'Homework', deadline: 'Next Monday', points: 100 },
-  ];
+export default function TasksScreen() {
+  const route = useRoute();
+  const navigation = useNavigation();
+  const { userId } = route.params || {}; // Get userId from navigation params
+
+  const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (userId) {
+      fetchTasks();
+    }
+  }, [userId]);
+
+  const fetchTasks = async () => {
+    try {
+      const response = await fetch(`https://choresbuddy-dotnet.onrender.com/api/User/child/${userId}/profile`);
+      const data = await response.json();
+
+      if (response.ok) {
+        // Combine available and late tasks
+        const combinedTasks = [...data.availableTasks, ...data.lateTasks];
+        setTasks(combinedTasks);
+      } else {
+        setError(data.message || 'Failed to load tasks.');
+      }
+    } catch (err) {
+      setError('Something went wrong while fetching tasks.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color="#870ae0" />
+        <Text>Loading tasks...</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.centered}>
+        <Text style={styles.errorText}>{error}</Text>
+        <TouchableOpacity style={styles.retryButton} onPress={fetchTasks}>
+          <Text style={styles.buttonText}>Retry</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
-        <View style={styles.header}>
-            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                <Icon name="arrow-back-outline" size={28} color="#000" />
-            </TouchableOpacity>
+      {/* Header */}
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Icon name="arrow-back-outline" size={28} color="#000" />
+        </TouchableOpacity>
         <Text style={styles.title}>Tasks</Text>
         <TouchableOpacity style={styles.notificationButton}>
-            <Icon name="notifications-outline" size={28} color="#000" />
+          <Icon name="notifications-outline" size={28} color="#000" />
         </TouchableOpacity>
-        </View>
+      </View>
 
-      <Text style={styles.sectionTitle}>Upcoming Tasks</Text>
+      <Text style={styles.sectionTitle}>Available Tasks</Text>
 
-      <FlatList
-        data={tasks}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.taskCard}>
-            <Text style={styles.taskTitle}>{item.title}</Text>
-            <Text style={styles.taskDetails}>Deadline: {item.deadline}</Text>
-            <Text style={styles.taskDetails}>Points: {item.points}</Text>
-            <TouchableOpacity 
-                style={styles.verifyButton} 
+      {tasks.length === 0 ? (
+        <Text style={styles.noTasksText}>No tasks assigned yet.</Text>
+      ) : (
+        <FlatList
+          data={tasks}
+          keyExtractor={(item) => item.taskId.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.taskCard}>
+              <Text style={styles.taskTitle}>{item.title}</Text>
+              <Text style={styles.taskDetails}>Deadline: {new Date(item.deadline).toLocaleDateString()}</Text>
+              <Text style={styles.taskDetails}>Points: {item.points}</Text>
+              <TouchableOpacity
+                style={styles.verifyButton}
                 onPress={() => navigation.navigate('TaskVerificationScreen', { task: item })}
-            >
-             <Text style={styles.verifyButtonText}>Proceed to Verification</Text>
-            </TouchableOpacity>
+              >
+                <Text style={styles.verifyButtonText}>Proceed to Verification</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        />
+      )}
 
-          </View>
-        )}
-      />
-
+      {/* Bottom Buttons */}
       <View style={styles.buttonsContainer}>
-        <TouchableOpacity style={styles.secondaryButton} onPress={() => navigation.navigate('CompletedTasksScreen')}>
+        <TouchableOpacity style={styles.secondaryButton} onPress={() => navigation.navigate('CompletedTasksScreen', { userId })}>
           <Text style={styles.buttonText}>Completed Tasks</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.secondaryButton} onPress={() => navigation.navigate('AllTasksScreen')}>
+        <TouchableOpacity style={styles.secondaryButton} onPress={() => navigation.navigate('AllTasksScreen', { userId })}>
           <Text style={styles.buttonText}>View All Tasks</Text>
         </TouchableOpacity>
       </View>
 
+      {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ChildDashboard')}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ChildDashboard', { userId })}>
           <Icon name="home-outline" size={24} color="#870ae0" />
           <Text style={styles.navText}>Home</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Cart')}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Cart', { userId })}>
           <Icon name="cart-outline" size={24} color="#000" />
           <Text style={styles.navText}>Cart</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ChildStoreScreen')}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ChildStoreScreen', { userId })}>
           <Icon name="storefront-outline" size={24} color="#000" />
           <Text style={styles.navText}>Store</Text>
         </TouchableOpacity>
@@ -67,7 +122,6 @@ export default function TasksScreen({ navigation }) {
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#ffffff', padding: 20, paddingBottom: 80 },
 

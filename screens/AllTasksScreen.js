@@ -1,18 +1,75 @@
-import React from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useRoute, useNavigation } from '@react-navigation/native';
 
-export default function AllTasksScreen({ navigation }) {
-  const tasks = [
-    { id: '1', title: 'Take the garbage out', points: 50, due: 'October 10, 2024', status: 'Done', statusColor: '#8BC34A' },
-    { id: '2', title: 'Brush your teeth', points: 10, due: 'October 12, 2024', status: 'Done', statusColor: '#8BC34A' },
-    { id: '3', title: 'Clean the dishes', points: 80, due: 'October 15, 2024', status: 'Failed', statusColor: '#F44336' },
-    { id: '4', title: 'Complete Homework', points: 50, due: 'October 18, 2024', status: 'Pending', statusColor: '#FFC107' },
-    { id: '5', title: 'Clean Bedroom', points: 50, due: 'October 20, 2024', status: 'In Progress', statusColor: '#2196F3' },
-  ];
+export default function AllTasksScreen() {
+  const route = useRoute();
+  const navigation = useNavigation();
+  const { userId } = route.params || {}; // Get userId from navigation params
+
+  const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (userId) {
+      fetchAllTasks();
+    }
+  }, [userId]);
+
+  const fetchAllTasks = async () => {
+    try {
+      console.log(`Fetching all tasks for userId: ${userId}`);
+
+      const response = await fetch(`https://choresbuddy-dotnet.onrender.com/api/User/child/${userId}/profile`);
+      console.log("API Response Status:", response.status);
+
+      const data = await response.json();
+      console.log("API Response Data:", data);
+
+      if (response.ok) {
+        // Combine all task categories
+        const allTasks = [
+          ...data.availableTasks.map((task) => ({ ...task, status: 'Pending', statusColor: '#FFC107' })),
+          ...data.lateTasks.map((task) => ({ ...task, status: 'Overdue', statusColor: '#F44336' })),
+          ...data.completedTasks.map((task) => ({ ...task, status: 'Done', statusColor: '#8BC34A' })),
+        ];
+        setTasks(allTasks);
+      } else {
+        setError(data.message || "Failed to load tasks.");
+      }
+    } catch (err) {
+      console.error("Error fetching tasks:", err);
+      setError("Something went wrong while fetching tasks.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color="#870ae0" />
+        <Text>Loading all tasks...</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.centered}>
+        <Text style={styles.errorText}>{error}</Text>
+        <TouchableOpacity style={styles.retryButton} onPress={fetchAllTasks}>
+          <Text style={styles.buttonText}>Retry</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
+      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Icon name="arrow-back-outline" size={28} color="#000" />
@@ -24,31 +81,37 @@ export default function AllTasksScreen({ navigation }) {
       </View>
 
       <Text style={styles.sectionTitle}>All Tasks</Text>
-      <FlatList
-        data={tasks}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.taskCard}>
-            <Text style={styles.taskTitle}>{item.title}</Text>
-            <Text style={styles.taskDetails}>Points: {item.points}</Text>
-            <Text style={styles.taskDetails}>Due: {item.due}</Text>
-            <Text style={[styles.taskStatus, { color: item.statusColor }]}>
-              Status: {item.status}
-            </Text>
-          </View>
-        )}
-      />
 
+      {tasks.length === 0 ? (
+        <Text style={styles.noTasksText}>No tasks assigned yet.</Text>
+      ) : (
+        <FlatList
+          data={tasks}
+          keyExtractor={(item) => item.taskId.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.taskCard}>
+              <Text style={styles.taskTitle}>{item.title}</Text>
+              <Text style={styles.taskDetails}>Points: {item.points}</Text>
+              <Text style={styles.taskDetails}>Due: {new Date(item.deadline).toLocaleDateString()}</Text>
+              <Text style={[styles.taskStatus, { color: item.statusColor }]}>
+                Status: {item.status}
+              </Text>
+            </View>
+          )}
+        />
+      )}
+
+      {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ChildDashboard')}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ChildDashboard', { userId })}>
           <Icon name="home-outline" size={24} color="#870ae0" />
           <Text style={styles.navText}>Home</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Cart')}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Cart', { userId })}>
           <Icon name="cart-outline" size={24} color="#000" />
           <Text style={styles.navText}>Cart</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ChildStoreScreen')}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ChildStoreScreen', { userId })}>
           <Icon name="storefront-outline" size={24} color="#000" />
           <Text style={styles.navText}>Store</Text>
         </TouchableOpacity>
