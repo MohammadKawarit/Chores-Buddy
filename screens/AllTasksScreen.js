@@ -29,11 +29,23 @@ export default function AllTasksScreen() {
       console.log("API Response Data:", data);
 
       if (response.ok) {
-        // Combine all task categories
+        // Map statuses properly
         const allTasks = [
-          ...data.availableTasks.map((task) => ({ ...task, status: 'Pending', statusColor: '#FFC107' })),
-          ...data.lateTasks.map((task) => ({ ...task, status: 'Overdue', statusColor: '#F44336' })),
-          ...data.completedTasks.map((task) => ({ ...task, status: 'Done', statusColor: '#8BC34A' })),
+          ...data.availableTasks.map((task) => ({
+            ...task,
+            statusText: task.status === "PENDING" ? "Pending" : "To Do",
+            statusColor: task.status === "PENDING" ? "#FFC107" : "#4CAF50", // Yellow for Pending, Green for To Do
+          })),
+          ...data.lateTasks.map((task) => ({
+            ...task,
+            statusText: "Overdue",
+            statusColor: "#F44336", // Red for Overdue
+          })),
+          ...data.completedTasks.map((task) => ({
+            ...task,
+            statusText: "Completed",
+            statusColor: "#8BC34A", // Light Green for Completed
+          })),
         ];
         setTasks(allTasks);
       } else {
@@ -94,7 +106,7 @@ export default function AllTasksScreen() {
               <Text style={styles.taskDetails}>Points: {item.points}</Text>
               <Text style={styles.taskDetails}>Due: {new Date(item.deadline).toLocaleDateString()}</Text>
               <Text style={[styles.taskStatus, { color: item.statusColor }]}>
-                Status: {item.status}
+                Status: {item.statusText}
               </Text>
             </View>
           )}
@@ -119,6 +131,7 @@ export default function AllTasksScreen() {
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#ffffff', padding: 20, paddingBottom: 80 },

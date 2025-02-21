@@ -25,8 +25,10 @@ export default function TasksScreen() {
 
       if (response.ok) {
         // Combine available and late tasks
-        const combinedTasks = [...data.availableTasks, ...data.lateTasks];
-        setTasks(combinedTasks);
+        const availableTasks = [...data.availableTasks, ...data.lateTasks].filter(
+          (task) => task.status === "TO_DO" || task.status === "IN_PROGRESS"
+        );
+        setTasks(availableTasks);
       } else {
         setError(data.message || 'Failed to load tasks.');
       }

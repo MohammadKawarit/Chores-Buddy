@@ -1,10 +1,16 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useRoute, useNavigation } from '@react-navigation/native';
 
-export default function TaskProgressAndTrophiesScreen({ navigation }) {
+export default function TaskProgressAndTrophiesScreen() {
+  const route = useRoute();
+  const navigation = useNavigation();
+  const { userId } = route.params || {}; // Get userId from params
+
   return (
     <View style={styles.container}>
+      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Icon name="arrow-back-outline" size={28} color="#000" />
@@ -12,33 +18,44 @@ export default function TaskProgressAndTrophiesScreen({ navigation }) {
         <Text style={styles.title}>Track Progress</Text>
       </View>
 
+      {/* Buttons */}
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.progressButton} onPress={() => navigation.navigate('Trophies', { child: { name: 'Alex', image: 'https://randomuser.me/api/portraits/men/1.jpg' } })}>
+        <TouchableOpacity
+          style={styles.progressButton}
+          onPress={() => navigation.navigate('Trophies', { userId })}
+        >
           <Icon name="trophy-outline" size={20} color="#fff" />
           <Text style={styles.buttonText}>Trophies</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.progressButton} onPress={() => navigation.navigate('TasksDetails', { child: { name: 'Alex', image: 'https://randomuser.me/api/portraits/men/1.jpg' } })}>
+        <TouchableOpacity
+          style={styles.progressButton}
+          onPress={() => navigation.navigate('TasksDetails', { userId })}
+        >
           <Icon name="list-outline" size={20} color="#fff" />
           <Text style={styles.buttonText}>Task Details</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.progressButton} onPress={() => navigation.navigate('Leaderboard')}>
+        <TouchableOpacity
+          style={styles.progressButton}
+          onPress={() => navigation.navigate('Leaderboard', { userId })}
+        >
           <Icon name="bar-chart-outline" size={20} color="#fff" />
           <Text style={styles.buttonText}>Leaderboard</Text>
         </TouchableOpacity>
       </View>
 
+      {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ChildDashboard')}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ChildDashboard', { userId })}>
           <Icon name="home-outline" size={28} color="#870ae0" />
           <Text style={styles.navText}>Home</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('CartScreen')}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('CartScreen', { userId })}>
           <Icon name="cart-outline" size={28} color="#000" />
           <Text style={styles.navText}>Cart</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ChildStoreScreen')}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ChildStoreScreen', { userId })}>
           <Icon name="storefront-outline" size={28} color="#000" />
           <Text style={styles.navText}>Store</Text>
         </TouchableOpacity>
@@ -46,6 +63,7 @@ export default function TaskProgressAndTrophiesScreen({ navigation }) {
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#ffffff', padding: 20, paddingBottom: 80 },

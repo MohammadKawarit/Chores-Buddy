@@ -102,7 +102,7 @@ export default function ChildDashboardScreen() {
 
       <TouchableOpacity
         style={styles.trackProgressButton}
-        onPress={() => navigation.navigate('TaskProgressTrophiesScreen')}
+        onPress={() => navigation.navigate('TaskProgressTrophiesScreen', { userId })}
       >
         <Text style={styles.buttonText}>Track Progress & Trophies</Text>
       </TouchableOpacity>

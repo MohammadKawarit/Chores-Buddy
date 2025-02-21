@@ -89,6 +89,7 @@ export default function ManageTasksScreen() {
       <Text style={styles.taskDetails}>Assigned to: {children[item.assignedTo] || 'Loading...'}</Text>
       <Text style={styles.taskDetails}>Deadline: {new Date(item.deadline).toLocaleString()}</Text>
       <Text style={styles.taskDetails}>Points: {item.points}</Text>
+      <Text style={styles.taskDetails}>Comment: {item.comment}</Text>
       <Text style={styles.taskStatus}>{item.status.replace('_', ' ')}</Text>
     </TouchableOpacity>
   );

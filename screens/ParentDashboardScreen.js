@@ -102,7 +102,7 @@ export default function ParentDashboardScreen() {
         <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
           <View style={styles.balanceContainer}>
             <Text style={styles.balanceLabel}>Current Balance:</Text>
-            <Text style={styles.balanceText}>{balance} Points</Text>
+            <Text style={styles.balanceText}>{balance} balance</Text>
           </View>
 
           <Text style={styles.sectionTitle}>Child Overview</Text>

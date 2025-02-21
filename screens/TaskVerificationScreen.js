@@ -1,41 +1,70 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import * as ImagePicker from 'expo-image-picker';
 
 export default function TaskVerificationScreen({ route, navigation }) {
   const { task } = route.params;
   const [description, setDescription] = useState('');
-  const [image, setImage] = useState(null);
-  const handleImageUpload = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+  const [loading, setLoading] = useState(false);
 
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
+  const handleSubmitTask = async () => {
+    if (!description.trim()) {
+      Alert.alert('Error', 'Please enter a description before submitting.');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch(
+        `https://choresbuddy-dotnet.onrender.com/api/Task/${task.taskId}/submit?comment=${encodeURIComponent(description)}`,
+        {
+          method: 'POST',
+          headers: {
+            'Accept': '*/*',
+          },
+        }
+      );
+
+      const responseData = await response;
+      console.log('API Response:', responseData);
+
+      if (response.ok) {
+        Alert.alert('Success', 'Task submitted for verification!', [
+          { text: 'OK', onPress: () => navigation.goBack() },
+        ]);
+      } else {
+        Alert.alert('Error', responseData.message || 'Failed to submit task.');
+      }
+    } catch (error) {
+      console.error('Error submitting task:', error);
+      Alert.alert('Error', 'Something went wrong. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <View style={styles.container}>
-        <View style={styles.header}>
-            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                <Icon name="arrow-back-outline" size={28} color="#000" />
-            </TouchableOpacity>
-            <Text style={styles.title}>Tasks</Text>
-            <TouchableOpacity style={styles.notificationButton}>
-                <Icon name="notifications-outline" size={28} color="#000" />
-            </TouchableOpacity>
-        </View>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Icon name="arrow-back-outline" size={28} color="#000" />
+        </TouchableOpacity>
+        <Text style={styles.title}>Task Verification</Text>
+        <TouchableOpacity style={styles.notificationButton}>
+          <Icon name="notifications-outline" size={28} color="#000" />
+        </TouchableOpacity>
+      </View>
+
       <Text style={styles.sectionTitle}>Send for Verification</Text>
+
       <View style={styles.taskCard}>
         <Text style={styles.taskTitle}>{task.title}</Text>
-        <Text style={styles.taskDetails}>Deadline: {task.deadline}</Text>
+        <Text style={styles.taskDetails}>Deadline: {new Date(task.deadline).toLocaleDateString()}</Text>
         <Text style={styles.taskDetails}>Points: {task.points}</Text>
       </View>
+
       <Text style={styles.label}>Description</Text>
       <TextInput
         style={styles.input}
@@ -44,15 +73,18 @@ export default function TaskVerificationScreen({ route, navigation }) {
         value={description}
         onChangeText={setDescription}
       />
-      <TouchableOpacity style={styles.uploadButton} onPress={handleImageUpload}>
+
+      <TouchableOpacity style={styles.uploadButton}>
         <Text style={styles.uploadButtonText}>Upload Image to Verify</Text>
         <Icon name="add-outline" size={20} color="#fff" />
       </TouchableOpacity>
 
-      {image && <Image source={{ uri: image }} style={styles.uploadedImage} />}
-
-      <TouchableOpacity style={styles.submitButton}>
-        <Text style={styles.submitButtonText}>Submit</Text>
+      <TouchableOpacity style={styles.submitButton} onPress={handleSubmitTask} disabled={loading}>
+        {loading ? (
+          <ActivityIndicator size="small" color="#fff" />
+        ) : (
+          <Text style={styles.submitButtonText}>Submit</Text>
+        )}
       </TouchableOpacity>
 
       <View style={styles.bottomNav}>
