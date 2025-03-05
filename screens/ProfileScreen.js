@@ -1,9 +1,61 @@
-import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Image, TouchableOpacity, StyleSheet, ActivityIndicator, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useRoute, useNavigation } from '@react-navigation/native';
+import * as ImagePicker from 'expo-image-picker';
 
-export default function ProfileScreen({ navigation }) {
+export default function ProfileScreen() {
+  const route = useRoute();
+  const navigation = useNavigation();
+  const { userId } = route.params || {}; // Get userId from params
+
+  const [profile, setProfile] = useState({
+    name: 'Loading...',
+    email: 'Loading...',
+    points: 0,
+    balance: 0,
+  });
+
   const [profileImage, setProfileImage] = useState('https://randomuser.me/api/portraits/men/1.jpg');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (userId) {
+      fetchProfile();
+    }
+  }, [userId]);
+
+  const fetchProfile = async () => {
+    try {
+      console.log(`Fetching profile for userId: ${userId}`);
+
+      const response = await fetch(`https://choresbuddy-dotnet.onrender.com/api/User/${userId}`);
+      console.log("API Response Status:", response.status);
+
+      const data = await response.json();
+      console.log("API Response Data:", data);
+
+      if (response.ok) {
+        setProfile({
+          name: data.name,
+          email: data.email,
+          points: data.points,
+          balance: data.balance,
+        });
+
+        // Placeholder for profile image (set a default if no image field is in API)
+        setProfileImage(data.image || "https://cdn-icons-png.flaticon.com/512/2922/2922510.png");
+      } else {
+        setError(data.message || "Failed to load profile.");
+      }
+    } catch (err) {
+      console.error("Error fetching profile:", err);
+      setError("Something went wrong while fetching profile.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleProfilePictureChange = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -30,8 +82,29 @@ export default function ProfileScreen({ navigation }) {
     );
   };
 
+  if (loading) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color="#870ae0" />
+        <Text>Loading profile...</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.centered}>
+        <Text style={styles.errorText}>{error}</Text>
+        <TouchableOpacity style={styles.retryButton} onPress={fetchProfile}>
+          <Text style={styles.buttonText}>Retry</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
+      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Icon name="arrow-back-outline" size={24} color="#000" />
@@ -39,29 +112,36 @@ export default function ProfileScreen({ navigation }) {
         <Text style={styles.title}>Profile</Text>
       </View>
 
+      {/* Profile Image */}
       <View style={styles.profileSection}>
         <TouchableOpacity onPress={handleProfilePictureChange}>
           <Image style={styles.profileImage} source={{ uri: profileImage }} />
         </TouchableOpacity>
-        <Text style={styles.profileName}>Alex Johnson</Text>
-        <Text style={styles.profileEmail}>alex@gmail.com</Text>
+        <Text style={styles.profileName}>{profile.name}</Text>
+        <Text style={styles.profileEmail}>{profile.email}</Text>
       </View>
 
+      {/* Profile Info */}
       <View style={styles.infoSection}>
         <View style={styles.infoRow}>
-          <Text style={styles.infoLabel}>Username:</Text>
-          <Text style={styles.infoText}>alexjohnson</Text>
+          <Text style={styles.infoLabel}>Name:</Text>
+          <Text style={styles.infoText}>{profile.name}</Text>
         </View>
         <View style={styles.infoRow}>
           <Text style={styles.infoLabel}>Email:</Text>
-          <Text style={styles.infoText}>alex@gmail.com</Text>
+          <Text style={styles.infoText}>{profile.email}</Text>
         </View>
         <View style={styles.infoRow}>
-          <Text style={styles.infoLabel}>Phone:</Text>
-          <Text style={styles.infoText}>+1 (555) 123-4567</Text>
+          <Text style={styles.infoLabel}>Points:</Text>
+          <Text style={styles.infoText}>{profile.points}</Text>
+        </View>
+        <View style={styles.infoRow}>
+          <Text style={styles.infoLabel}>Balance:</Text>
+          <Text style={styles.infoText}>{profile.balance}</Text>
         </View>
       </View>
 
+      {/* Logout Button */}
       <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
         <Text style={styles.logoutText}>Log Out</Text>
       </TouchableOpacity>
