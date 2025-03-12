@@ -86,7 +86,7 @@ export default function ParentDashboardScreen() {
           <View style={styles.dropdown}>
             <FlatList
               data={notifications}
-              keyExtractor={(item) => item.notification_id.toString()}
+              keyExtractor={(item) => item.notificationId.toString()}
               renderItem={({ item }) => (
                 <View style={[styles.notificationItem, item.isRead && styles.readNotification]}>
                   <Text style={styles.notificationText}>{item.message}</Text>

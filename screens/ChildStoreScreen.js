@@ -1,40 +1,147 @@
-import React, { useState } from 'react';
-import { View, Text, FlatList, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { 
+  View, Text, FlatList, TextInput, TouchableOpacity, Image, ActivityIndicator, StyleSheet, Alert 
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useRoute, useNavigation } from '@react-navigation/native';
 
-export default function ChildStoreScreen({ navigation }) {
+export default function ChildStoreScreen() {
+  const route = useRoute();
+  const navigation = useNavigation();
+  const { userId } = route.params || {}; // Get userId from navigation params
+
   const [searchQuery, setSearchQuery] = useState('');
-  
-  const storeItems = [
-    {
-      id: '1',
-      name: 'Gaming Console',
-      points: 500,
-      description: 'Experience immersive gaming with high-speed performance.',
-      image: 'https://via.placeholder.com/100',
-    },
-    {
-      id: '2',
-      name: 'Colouring Pens',
-      points: 150,
-      description: 'Vibrant colors for your creative drawings.',
-      image: 'https://via.placeholder.com/100',
-    },
-    {
-      id: '3',
-      name: 'Remote Controller',
-      points: 300,
-      description: 'Wireless controller for smooth experience.',
-      image: 'https://via.placeholder.com/100',
-    },
-  ];
+  const [rewards, setRewards] = useState([]);
+  const [childPoints, setChildPoints] = useState(0);
+  const [cartItems, setCartItems] = useState([]); // Stores cart items
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const filteredItems = storeItems.filter((item) =>
+  useEffect(() => {
+    if (userId) {
+      fetchRewards();
+      fetchChildPoints();
+      fetchCart(); // Fetch cart items
+    }
+  }, [userId]);
+
+  const fetchRewards = async () => {
+    try {
+      console.log(`Fetching available rewards for childId: ${userId}`);
+
+      const response = await fetch(`https://choresbuddy-dotnet.onrender.com/api/Reward/child/${userId}/available`);
+      console.log("API Response Status:", response.status);
+
+      const data = await response.json();
+      console.log("API Response Data:", data);
+
+      if (response.ok) {
+        setRewards(data);
+      } else {
+        setError(data.message || "No rewards available.");
+      }
+    } catch (err) {
+      console.error("Error fetching rewards:", err);
+      setError("Something went wrong while fetching rewards.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchChildPoints = async () => {
+    try {
+      console.log(`Fetching points for childId: ${userId}`);
+      
+      const response = await fetch(`https://choresbuddy-dotnet.onrender.com/api/User/child/${userId}/points`);
+      console.log("Points API Response Status:", response.status);
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Points API Response Data:", data);
+        setChildPoints(data.points);
+      } else {
+        console.log("Failed to fetch child points.");
+      }
+    } catch (err) {
+      console.error("Error fetching child points:", err);
+    }
+  };
+
+  const fetchCart = async () => {
+    try {
+      console.log(`Fetching cart for childId: ${userId}`);
+      
+      const response = await fetch(`https://choresbuddy-dotnet.onrender.com/api/Cart/${userId}`);
+      console.log("Cart API Response Status:", response.status);
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Cart API Response Data:", data);
+        setCartItems(data.rewards || []);
+      } else {
+        console.log("Failed to fetch cart.");
+      }
+    } catch (err) {
+      console.error("Error fetching cart:", err);
+    }
+  };
+
+  const addToCart = async (rewardId, pointsRequired) => {
+    if (childPoints < pointsRequired) {
+      Alert.alert("Not Enough Points", "You don't have enough points for this reward.");
+      return;
+    }
+
+    try {
+      console.log(`Adding reward ${rewardId} to cart for childId: ${userId}`);
+      
+      const response = await fetch(
+        `https://choresbuddy-dotnet.onrender.com/api/rewardcart/add-to-cart?childId=${userId}&rewardId=${rewardId}`,
+        { method: "POST" }
+      );
+      console.log("Add to Cart API Response Status:", response.status);
+
+      if (response.ok) {
+        Alert.alert("Success", "Reward added to cart!");
+        setChildPoints((prevPoints) => prevPoints - pointsRequired);
+        fetchCart(); // Refresh cart count
+      } else {
+        const data = await response.json();
+        Alert.alert("Error", data.message || "Failed to add reward to cart.");
+      }
+    } catch (err) {
+      console.error("Error adding reward to cart:", err);
+      Alert.alert("Error", "Something went wrong while adding reward to cart.");
+    }
+  };
+
+  const filteredItems = rewards.filter((item) =>
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  if (loading) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color="#870ae0" />
+        <Text>Loading available rewards...</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.centered}>
+        <Text style={styles.errorText}>{error}</Text>
+        <TouchableOpacity style={styles.retryButton} onPress={fetchRewards}>
+          <Text style={styles.buttonText}>Retry</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
+      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Icon name="arrow-back-outline" size={28} color="#000" />
@@ -42,10 +149,19 @@ export default function ChildStoreScreen({ navigation }) {
         <Text style={styles.title}>Store</Text>
         <View style={styles.pointsContainer}>
           <Icon name="wallet-outline" size={24} color="#000" />
-          <Text style={styles.pointsText}>1500 pts</Text>
+          <Text style={styles.pointsText}>{childPoints} pts</Text>
         </View>
+        <TouchableOpacity style={styles.cartIcon} onPress={() => navigation.navigate('Cart', { userId })}>
+          <Icon name="cart-outline" size={28} color="#000" />
+          {cartItems.length > 0 && (
+            <View style={styles.cartBadge}>
+              <Text style={styles.cartBadgeText}>{cartItems.length}</Text>
+            </View>
+          )}
+        </TouchableOpacity>
       </View>
 
+      {/* Search Bar */}
       <View style={styles.searchContainer}>
         <Icon name="search-outline" size={20} color="#666" style={styles.searchIcon} />
         <TextInput
@@ -56,43 +172,37 @@ export default function ChildStoreScreen({ navigation }) {
         />
       </View>
 
+      {/* Rewards List */}
       <FlatList
         data={filteredItems}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => navigation.navigate('ViewItemScreen', { item })}>
-            <View style={styles.itemCard}>
-              <Image source={{ uri: item.image }} style={styles.itemImage} />
-              <View style={styles.itemInfo}>
-                <Text style={styles.itemTitle}>{item.name}</Text>
-                <Text style={styles.itemPoints}>{item.points} pts</Text>
-                <Text style={styles.itemDescription}>{item.description}</Text>
+        keyExtractor={(item) => item.rewardId.toString()}
+        renderItem={({ item }) => {
+          const isInCart = cartItems.some(cartItem => cartItem.rewardId === item.rewardId);
+          return (
+            <TouchableOpacity onPress={() => navigation.navigate('ViewItemScreen', { userId, item })}>
+              <View style={styles.itemCard}>
+                <Image source={{ uri: item.imageUrl }} style={styles.itemImage} />
+                <View style={styles.itemInfo}>
+                  <Text style={styles.itemTitle}>{item.name}</Text>
+                  <Text style={styles.itemPoints}>{item.pointsRequired} pts</Text>
+                  <Text style={styles.itemDescription}>{item.description}</Text>
+                </View>
+                <TouchableOpacity 
+                  style={[styles.cartButton, isInCart && styles.disabledButton]}
+                  onPress={() => addToCart(item.rewardId, item.pointsRequired)}
+                  disabled={isInCart}
+                >
+                  <Icon name="cart-outline" size={24} color={isInCart ? "#ccc" : "#870ae0"} />
+                </TouchableOpacity>
               </View>
-              <TouchableOpacity style={styles.cartButton}>
-                <Icon name="cart-outline" size={24} color="#870ae0" />
-              </TouchableOpacity>
-            </View>
-          </TouchableOpacity>
-        )}
+            </TouchableOpacity>
+          );
+        }}
       />
-
-      <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ChildDashboard')}>
-          <Icon name="home-outline" size={24} color="#870ae0" />
-          <Text style={styles.navText}>Home</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Cart')}>
-          <Icon name="cart-outline" size={24} color="#000" />
-          <Text style={styles.navText}>Cart</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ChildStoreScreen')}>
-          <Icon name="storefront-outline" size={24} color="#000" />
-          <Text style={styles.navText}>Store</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#ffffff', padding: 20, paddingBottom: 80 },

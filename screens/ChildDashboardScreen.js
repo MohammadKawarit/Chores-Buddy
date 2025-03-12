@@ -113,7 +113,7 @@ export default function ChildDashboardScreen() {
           <Icon name="home-outline" size={28} color="#870ae0" />
           <Text style={styles.navText}>Home</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('CartScreen', { userId })}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Cart', { userId })}>
           <Icon name="cart-outline" size={28} color="#000" />
           <Text style={styles.navText}>Cart</Text>
         </TouchableOpacity>

@@ -1,16 +1,117 @@
-import React from 'react';
-import { View, Text, FlatList, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { 
+  View, Text, FlatList, TouchableOpacity, Image, ActivityIndicator, Alert, StyleSheet 
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useRoute, useNavigation } from '@react-navigation/native';
 
-export default function CartScreen({ navigation }) {
-  const cartItems = [
-    { id: '1', name: 'Gaming Console', points: 500, qty: 1, image: 'https://via.placeholder.com/80' },
-    { id: '2', name: 'Smartwatch', points: 1000, qty: 1, image: 'https://via.placeholder.com/80' },
-  ];
+export default function CartScreen() {
+  const route = useRoute();
+  const navigation = useNavigation();
+  const { userId } = route.params || {}; // Get userId from navigation params
+
+  const [cartItems, setCartItems] = useState([]);
+  const [childPoints, setChildPoints] = useState(0);
+  const [cartId, setCartId] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (userId) {
+      fetchCart();
+      fetchChildPoints();
+    }
+  }, [userId]);
+
+  const fetchCart = async () => {
+    try {
+      console.log(`Fetching cart for childId: ${userId}`);
+      const response = await fetch(`https://choresbuddy-dotnet.onrender.com/api/Cart/${userId}`);
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Cart API Response Data:", data);
+        setCartItems(data.rewards || []);
+        setCartId(data.cartId || null);
+      } else {
+        console.error("Failed to fetch cart.");
+      }
+    } catch (err) {
+      console.error("Error fetching cart:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchChildPoints = async () => {
+    try {
+      console.log(`Fetching points for childId: ${userId}`);
+      const response = await fetch(`https://choresbuddy-dotnet.onrender.com/api/User/child/${userId}/points`);
+
+      if (response.ok) {
+        const data = await response.json();
+        setChildPoints(data.points);
+      } else {
+        console.error("Failed to fetch child points.");
+      }
+    } catch (err) {
+      console.error("Error fetching child points:", err);
+    }
+  };
+
+  const removeFromCart = async (rewardId) => {
+    try {
+      console.log(`Removing reward ${rewardId} from cart for childId: ${userId}`);
+      const response = await fetch(
+        `https://choresbuddy-dotnet.onrender.com/api/RewardCart?cartId=${cartId}&rewardId=${rewardId}`,
+        { method: "DELETE" }
+      );
+
+      if (response.ok) {
+        Alert.alert("Success", "Reward removed from cart!");
+        fetchCart(); // Refresh cart
+      } else {
+        Alert.alert("Error", "Failed to remove reward from cart.");
+      }
+    } catch (err) {
+      console.error("Error removing reward from cart:", err);
+      Alert.alert("Error", "Something went wrong while removing reward.");
+    }
+  };
+
+  const submitForVerification = async () => {
+    try {
+      console.log(`Submitting cart for verification for childId: ${userId}`);
+      const response = await fetch(
+        `https://choresbuddy-dotnet.onrender.com/api/RewardCart/submit/${userId}`,
+        { method: "POST" }
+      );
+
+      if (response.ok) {
+        Alert.alert("Success", "Cart submitted for verification!");
+        fetchCart(); // Refresh cart
+      } else {
+        Alert.alert("Error", "Failed to submit cart.");
+      }
+    } catch (err) {
+      console.error("Error submitting cart:", err);
+      Alert.alert("Error", "Something went wrong while submitting cart.");
+    }
+  };
+
+  const allItemsSubmitted = cartItems.length > 0 && cartItems.every(item => item.parentApprovalStatus === "SUBMITTED");
+
+  if (loading) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color="#870ae0" />
+        <Text>Loading cart...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
-
+      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Icon name="arrow-back-outline" size={28} color="#000" />
@@ -18,34 +119,55 @@ export default function CartScreen({ navigation }) {
         <Text style={styles.title}>Cart</Text>
         <View style={styles.pointsContainer}>
           <Icon name="wallet-outline" size={24} color="#000" />
-          <Text style={styles.pointsText}>1500 pts</Text>
+          <Text style={styles.pointsText}>{childPoints} pts</Text>
         </View>
       </View>
 
-      <FlatList
-        data={cartItems}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.itemCard}>
-            <Image source={{ uri: item.image }} style={styles.itemImage} />
-            <View style={styles.itemInfo}>
-              <Text style={styles.itemTitle}>{item.name}</Text>
-              <Text style={styles.itemPoints}>{item.points} pts</Text>
-              <Text style={styles.itemQty}>Qty: {item.qty}</Text>
+      {/* Cart List */}
+      {cartItems.length === 0 ? (
+        <Text style={styles.emptyCartText}>Your cart is empty.</Text>
+      ) : (
+        <FlatList
+          data={cartItems}
+          keyExtractor={(item) => item.rewardId.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.itemCard}>
+              <Image source={{ uri: item.imageUrl }} style={styles.itemImage} />
+              <View style={styles.itemInfo}>
+                <Text style={styles.itemTitle}>{item.name}</Text>
+                <Text style={styles.itemPoints}>{item.pointsRequired} pts</Text>
+                {item.parentApprovalStatus === "SUBMITTED" && (
+                  <Text style={styles.submittedText}>Submitted</Text>
+                )}
+              </View>
+              <TouchableOpacity style={styles.removeButton} onPress={() => removeFromCart(item.rewardId)} disabled={item.parentApprovalStatus === "SUBMITTED"}>
+                <Icon name="trash-outline" size={24} color={item.parentApprovalStatus === "SUBMITTED" ? "gray" : "red"} />
+              </TouchableOpacity>
             </View>
-          </View>
-        )}
-      />
+          )}
+        />
+      )}
 
+      {/* Total Points */}
       <View style={styles.totalContainer}>
         <Text style={styles.totalText}>Total: </Text>
-        <Text style={styles.totalPoints}>1500 pts</Text>
+        <Text style={styles.totalPoints}>
+          {cartItems.reduce((total, item) => total + item.pointsRequired, 0)} pts
+        </Text>
       </View>
 
-      <TouchableOpacity style={styles.verifyButton}>
-        <Text style={styles.verifyButtonText}>Send for Verification</Text>
+      {/* Submit for Verification */}
+      <TouchableOpacity 
+        style={[styles.verifyButton, allItemsSubmitted && styles.disabledButton]} 
+        onPress={submitForVerification} 
+        disabled={allItemsSubmitted}
+      >
+        <Text style={styles.verifyButtonText}>
+          {allItemsSubmitted ? "Already Submitted" : "Send for Verification"}
+        </Text>
       </TouchableOpacity>
 
+      {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
         <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ChildDashboard')}>
           <Icon name="home-outline" size={24} color="#870ae0" />
@@ -86,6 +208,7 @@ const styles = StyleSheet.create({
 
   verifyButton: { backgroundColor: '#870ae0', borderRadius: 6, paddingVertical: 12, alignItems: 'center', marginVertical: 10 },
   verifyButtonText: { color: '#ffffff', fontSize: 16, fontWeight: 'bold' },
+  disabledButton: { backgroundColor: '#ccc' },
 
   bottomNav: { position: 'absolute', bottom: 0, left: 0, right: 0, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', borderTopWidth: 1, borderTopColor: '#ccc', backgroundColor: '#ffffff', paddingVertical: 12, height: 70 },
   navItem: { alignItems: 'center' },
