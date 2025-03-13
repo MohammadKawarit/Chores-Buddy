@@ -30,7 +30,11 @@ export default function CartScreen() {
       if (response.ok) {
         const data = await response.json();
         console.log("Cart API Response Data:", data);
-        setCartItems(data.rewards || []);
+
+        // Filter out rewards with "APPROVED" status
+        const filteredRewards = data.rewards.filter(item => item.parentApprovalStatus !== "APPROVED" && item.parentApprovalStatus !== "DECLINED");
+
+        setCartItems(filteredRewards || []);
         setCartId(data.cartId || null);
       } else {
         console.error("Failed to fetch cart.");
@@ -129,7 +133,7 @@ export default function CartScreen() {
       ) : (
         <FlatList
           data={cartItems}
-          keyExtractor={(item) => item.rewardId.toString()}
+          keyExtractor={(item, index) => `${item.rewardId}-${index}`} // ✅ Ensure unique keys
           renderItem={({ item }) => (
             <View style={styles.itemCard}>
               <Image source={{ uri: item.imageUrl }} style={styles.itemImage} />
@@ -140,12 +144,17 @@ export default function CartScreen() {
                   <Text style={styles.submittedText}>Submitted</Text>
                 )}
               </View>
-              <TouchableOpacity style={styles.removeButton} onPress={() => removeFromCart(item.rewardId)} disabled={item.parentApprovalStatus === "SUBMITTED"}>
+              <TouchableOpacity
+                style={styles.removeButton}
+                onPress={() => removeFromCart(item.rewardId)}
+                disabled={item.parentApprovalStatus === "SUBMITTED"}
+              >
                 <Icon name="trash-outline" size={24} color={item.parentApprovalStatus === "SUBMITTED" ? "gray" : "red"} />
               </TouchableOpacity>
             </View>
           )}
         />
+
       )}
 
       {/* Total Points */}
@@ -169,15 +178,15 @@ export default function CartScreen() {
 
       {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ChildDashboard')}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ChildDashboard', { userId })}>
           <Icon name="home-outline" size={24} color="#870ae0" />
           <Text style={styles.navText}>Home</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('CartScreen')}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Cart', { userId })}>
           <Icon name="cart-outline" size={24} color="#000" />
           <Text style={styles.navText}>Cart</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ChildStoreScreen')}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ChildStoreScreen', { userId })}>
           <Icon name="storefront-outline" size={24} color="#000" />
           <Text style={styles.navText}>Store</Text>
         </TouchableOpacity>
@@ -185,6 +194,7 @@ export default function CartScreen() {
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#ffffff', padding: 20, paddingBottom: 80 },

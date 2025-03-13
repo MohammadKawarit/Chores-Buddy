@@ -119,26 +119,6 @@ export default function ChildStoreScreen() {
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  if (loading) {
-    return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#870ae0" />
-        <Text>Loading available rewards...</Text>
-      </View>
-    );
-  }
-
-  if (error) {
-    return (
-      <View style={styles.centered}>
-        <Text style={styles.errorText}>{error}</Text>
-        <TouchableOpacity style={styles.retryButton} onPress={fetchRewards}>
-          <Text style={styles.buttonText}>Retry</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -177,7 +157,9 @@ export default function ChildStoreScreen() {
         data={filteredItems}
         keyExtractor={(item) => item.rewardId.toString()}
         renderItem={({ item }) => {
-          const isInCart = cartItems.some(cartItem => cartItem.rewardId === item.rewardId);
+          const existingItem = cartItems.find(cartItem => cartItem.rewardId === item.rewardId);
+          const isInCart = existingItem && ["PENDING", "SUBMITTED"].includes(existingItem.parentApprovalStatus);
+
           return (
             <TouchableOpacity onPress={() => navigation.navigate('ViewItemScreen', { userId, item })}>
               <View style={styles.itemCard}>
@@ -202,6 +184,7 @@ export default function ChildStoreScreen() {
     </View>
   );
 }
+
 
 
 const styles = StyleSheet.create({

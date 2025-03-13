@@ -38,7 +38,9 @@ export default function ParentDashboardScreen() {
 
   const fetchNotifications = async () => {
     try {
+      console.log(`Fetching notifications for userId: ${userId}`);
       const response = await fetch(`https://choresbuddy-dotnet.onrender.com/api/Notification/${userId}`);
+      
       if (response.ok) {
         const data = await response.json();
         setNotifications(data);
@@ -50,11 +52,36 @@ export default function ParentDashboardScreen() {
     }
   };
 
+  const markAsRead = async () => {
+    try {
+      // Mark each unread notification as read
+      const unreadNotifications = notifications.filter((notif) => !notif.isRead);
+      if (unreadNotifications.length === 0) return;
+
+      await Promise.all(
+        unreadNotifications.map(async (notif) => {
+          const response = await fetch(
+            `https://choresbuddy-dotnet.onrender.com/api/Notification/${notif.notificationId}/read`,
+            { method: 'PUT' }
+          );
+
+          if (!response.ok) {
+            console.error(`Failed to mark notification ${notif.notificationId} as read`);
+          }
+        })
+      );
+
+      // Update UI to mark notifications as read
+      setNotifications((prev) => prev.map((notif) => ({ ...notif, isRead: true })));
+      Alert.alert('Success', 'All notifications marked as read!');
+    } catch (error) {
+      console.error('Error marking notifications as read:', error);
+      Alert.alert('Error', 'Something went wrong while marking notifications as read.');
+    }
+  };
+
   const toggleDropdown = () => setShowDropdown(!showDropdown);
   const hideDropdown = () => setShowDropdown(false);
-  const markAsRead = () => {
-    setNotifications((prev) => prev.map((notif) => ({ ...notif, isRead: true })));
-  };
 
   const unreadCount = notifications.filter((notif) => !notif.isRead).length;
 
@@ -198,4 +225,6 @@ const styles = StyleSheet.create({
   bottomNav: { flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', borderTopWidth: 1, borderTopColor: '#ccc', paddingVertical: 15 },
   navItem: { alignItems: 'center' },
   navText: { fontSize: 14, color: '#030303' },
+  markAsReadButton: { padding: 10, alignItems: 'center', backgroundColor: '#870ae0', borderRadius: 6, marginTop: 10 },
+  markAsReadText: { color: '#fff', fontSize: 14, fontWeight: 'bold' },
 });

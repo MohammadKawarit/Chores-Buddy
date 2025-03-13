@@ -159,7 +159,7 @@ export default function ManageStoreScreen() {
           <View style={styles.rewardSection}>
             <TouchableOpacity
               style={styles.rewardButton}
-              onPress={() => navigation.navigate('RewardApproval')}
+              onPress={() => navigation.navigate('RewardApproval', {userId})}
             >
               <Text style={styles.rewardButtonText}>Reward Approval</Text>
             </TouchableOpacity>
