@@ -76,15 +76,15 @@ export default function AddChildScreen() {
       </View>
 
       <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ParentDashboard')}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ParentDashboard', {parentId})}>
           <Icon name="home-outline" size={24} color="#870ae0" />
           <Text style={styles.navText}>Home</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Store')}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Store', {parentId})}>
           <Icon name="storefront-outline" size={24} color="#000" />
           <Text style={styles.navText}>Store</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ManageTasks')}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ManageTasks', {parentId})}>
           <Icon name="list-outline" size={24} color="#000" />
           <Text style={styles.navText}>Tasks</Text>
         </TouchableOpacity>

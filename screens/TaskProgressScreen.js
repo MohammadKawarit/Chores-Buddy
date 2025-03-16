@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 export default function TaskProgressScreen({ route, navigation }) {
   const { task } = route.params;
   const [childName, setChildName] = useState('Loading...');
+  const [userID, setUserId] = useState('Loading..');
 
   useEffect(() => {
     fetchChildName();
@@ -16,6 +17,7 @@ export default function TaskProgressScreen({ route, navigation }) {
       if (response.ok) {
         const data = await response.json();
         setChildName(data.name);
+        setUserId(data.parentId);
       } else {
         setChildName('Unknown');
       }
@@ -133,15 +135,15 @@ export default function TaskProgressScreen({ route, navigation }) {
       </View>
 
       <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ParentDashboard')}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ParentDashboard', {userID})}>
           <Icon name="home-outline" size={24} color="#870ae0" />
           <Text style={styles.navText}>Home</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Store')}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Store', {userID})}>
           <Icon name="storefront-outline" size={24} color="#000" />
           <Text style={styles.navText}>Store</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ManageTasks')}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ManageTasks', {userID})}>
           <Icon name="list-outline" size={24} color="#000" />
           <Text style={styles.navText}>Tasks</Text>
         </TouchableOpacity>

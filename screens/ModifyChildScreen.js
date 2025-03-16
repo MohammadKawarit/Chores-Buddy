@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 export default function ModifyChildScreen({ route }) {
   const navigation = useNavigation();
   const { child } = route.params || { child: {} };
+  const userId = child.parentId;
 
   const [childName, setChildName] = useState(child.name || '');
   const [dob, setDob] = useState(child.dob || ''); // Keeping it as a text input
@@ -65,17 +66,17 @@ export default function ModifyChildScreen({ route }) {
       </TouchableOpacity>
 
       <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ParentDashboard')}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ParentDashboard', {userId})}>
           <Icon name="home-outline" size={24} color="#870ae0" />
           <Text style={styles.navText}>Home</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Store')}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Store', {userId})}>
           <Icon name="storefront-outline" size={24} color="#000" />
           <Text style={styles.navText}>Store</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ManageTasks')}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ManageTasks', {userId})}>
           <Icon name="list-outline" size={24} color="#000" />
           <Text style={styles.navText}>Tasks</Text>
         </TouchableOpacity>

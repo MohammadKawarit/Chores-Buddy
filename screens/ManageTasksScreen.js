@@ -125,9 +125,9 @@ export default function ManageTasksScreen() {
           <Icon name="storefront-outline" size={24} color="#000" />
           <Text style={styles.navText}>Store</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ManageTasks', { userId })}>
           <Icon name="list-outline" size={24} color="#000" />
-          <Text style={styles.navTextActive}>Tasks</Text>
+          <Text style={styles.navText}>Tasks</Text>
         </TouchableOpacity>
       </View>
     </View>

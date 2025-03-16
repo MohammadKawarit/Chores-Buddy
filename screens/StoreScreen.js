@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-export default function StoreScreen({ navigation }) {
+export default function StoreScreen({ route, navigation }) {
   const [balance, setBalance] = useState(150);
+  const { userId } = route.params || {};
 
   const storeItems = [
     { id: '1', points: 100, price: '£10' },
@@ -31,7 +32,7 @@ export default function StoreScreen({ navigation }) {
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.storeCard}
-            onPress={() => navigation.navigate('Checkout', { points: item.points, price: item.price })}
+            onPress={() => navigation.navigate('Checkout', { points: item.points, price: item.price, userId: userId })}
           >
             <Text style={styles.pointsText}>{item.points} Points</Text>
             <Text style={styles.subText}>{item.points} pts</Text>
@@ -43,7 +44,7 @@ export default function StoreScreen({ navigation }) {
 
       
       <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ParentDashboard')}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ParentDashboard', {userId})}>
           <Icon name="home-outline" size={24} color="#870ae0" />
           <Text style={styles.navText}>Home</Text>
         </TouchableOpacity>
@@ -51,7 +52,7 @@ export default function StoreScreen({ navigation }) {
           <Icon name="storefront-outline" size={24} color="#000" />
           <Text style={styles.navText}>Store</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ManageTasks')}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ManageTasks', {userId})}>
           <Icon name="list-outline" size={24} color="#000" />
           <Text style={styles.navText}>Tasks</Text>
         </TouchableOpacity>

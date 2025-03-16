@@ -1,13 +1,21 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
 
   const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert('Error', 'Please enter both email and password.');
+      return;
+    }
+
+    setLoading(true); // Start loading
+
     try {
       const response = await fetch(
         `https://choresbuddy-dotnet.onrender.com/api/User/login?email=${email}&password=${password}`,
@@ -22,15 +30,18 @@ export default function LoginScreen() {
       const data = await response.json();
       if (response.ok) {
         const { userId, role } = data;
+        setLoading(false); // Stop loading
         if (role === 'Parent') {
           navigation.navigate('ParentDashboard', { userId });
         } else {
           navigation.navigate('ChildDashboard', { userId });
         }
       } else {
+        setLoading(false); // Stop loading
         Alert.alert('Login Failed', data.message || 'Invalid credentials');
       }
     } catch (error) {
+      setLoading(false); // Stop loading
       Alert.alert('Error', 'Something went wrong. Please try again.');
     }
   };
@@ -41,6 +52,8 @@ export default function LoginScreen() {
       <TextInput
         style={styles.input}
         placeholder="Email"
+        autoCapitalize="none"
+        keyboardType="email-address"
         value={email}
         onChangeText={setEmail}
       />
@@ -51,8 +64,13 @@ export default function LoginScreen() {
         value={password}
         onChangeText={setPassword}
       />
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Login</Text>
+      
+      <TouchableOpacity style={styles.button} onPress={handleLogin} disabled={loading}>
+        {loading ? (
+          <ActivityIndicator size="small" color="#ffffff" />
+        ) : (
+          <Text style={styles.buttonText}>Login</Text>
+        )}
       </TouchableOpacity>
     </View>
   );

@@ -18,7 +18,8 @@ const mockTrophies = [
 
 export default function TrophiesScreen({ route, navigation }) {
   const child = route.params?.child || { name: 'Unknown', image: 'https://via.placeholder.com/100' };
-
+  const userId = route.params?.child;
+  console.log(child);
   return (
     <View style={styles.container}>
     
@@ -57,17 +58,17 @@ export default function TrophiesScreen({ route, navigation }) {
 
       
      <View style={styles.bottomNav}>
-             <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ParentDashboard')}>
-              <Icon name="home-outline" size={24} color="#870ae0" />
-              <Text style={styles.navText}>Home</Text>
-              </TouchableOpacity>
-             <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Store')}>
-               <Icon name="storefront-outline" size={24} color="#000" />
-               <Text style={styles.navText}>Store</Text>
+             <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ChildDashboard', { userId })}>
+               <Icon name="home-outline" size={28} color="#870ae0" />
+               <Text style={styles.navText}>Home</Text>
              </TouchableOpacity>
-             <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ManageTasks')}>
-               <Icon name="list-outline" size={24} color="#000" />
-               <Text style={styles.navText}>Task</Text>
+             <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Cart', { userId })}>
+               <Icon name="cart-outline" size={28} color="#000" />
+               <Text style={styles.navText}>Cart</Text>
+             </TouchableOpacity>
+             <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ChildStoreScreen', { userId })}>
+               <Icon name="storefront-outline" size={28} color="#000" />
+               <Text style={styles.navText}>Store</Text>
              </TouchableOpacity>
            </View>
     </View>

@@ -5,8 +5,9 @@ import { useBalance } from '../context/BalanceContext';
 
 export default function OrderConfirmationScreen({ navigation, route }) {
   const { balance } = useBalance(); 
-  const { points } = route.params || { points: 0 }; 
+  const { points, userId } = route.params || { points: 0 }; 
 
+  console.log(userId);
   return (
     <View style={styles.container}>
     
@@ -26,7 +27,7 @@ export default function OrderConfirmationScreen({ navigation, route }) {
         
         <TouchableOpacity
           style={styles.returnButton}
-          onPress={() => navigation.navigate('ParentDashboard')}
+          onPress={() => navigation.navigate('ParentDashboard', {userId})}
         >
           <Text style={styles.returnButtonText}>Return to Homepage</Text>
         </TouchableOpacity>
